@@ -1,0 +1,6 @@
+{
+  "name": "JLU Gießen Accounting Tutor",
+  "description": "Interaktiver Accounting-Tutor für Buchführung & Kostenrechnung am FB 02 der Justus-Liebig-Universität Gießen mit Buchungs-Arena, Fehler-Studio, KI-Copilot und Klausur-Simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
