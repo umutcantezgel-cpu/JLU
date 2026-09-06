@@ -59,11 +59,16 @@ export async function POST(req: NextRequest) {
     const geminiKeys = getKeys(process.env.GEMINI_API_KEYS, process.env.GEMINI_API_KEY);
     const openRouterKeys = getKeys(process.env.OPENROUTER_API_KEYS, process.env.OPENROUTER_API_KEY);
 
+    const isExamQuestion = context?.includes('KLAUSURFRAGE');
     const userPrompt = `Aufgaben-Kontext: ${context || 'Allgemeine Buchführung / KLR am FB 02 WiWi'}
 ${history ? `Bisheriger Verlauf: ${JSON.stringify(history)}\n` : ''}
 Rabias Frage / Sachverhalt: "${question}"
 
-Bitte erkläre dies Rabia im universitären JLU-Standard strukturiert nach den 4 Schritten.`;
+${
+  isExamQuestion
+    ? 'WICHTIG (KLAUSUR-MODUS): Rabia befindet sich gerade in einer Prüfungssimulation! Gib ihr didaktische Denkanstöße, erkläre das methodische Vorgehen und die Konten/Formeln, aber verrate ihr NICHT die finale Zahl oder den Buchungssatz 1:1, sondern leite sie an, es selbst zu berechnen.'
+    : 'Bitte erkläre dies Rabia im universitären JLU-Standard strukturiert nach den 4 Schritten.'
+}`;
 
     // 1. Try Google Gemini Keys (with key rotation on quota / failure)
     for (const key of geminiKeys) {

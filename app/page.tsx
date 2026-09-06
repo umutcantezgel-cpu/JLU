@@ -7,6 +7,7 @@ import { DashboardView } from '@/components/DashboardView';
 import { ArenaView } from '@/components/ArenaView';
 import { FehlerStudioView } from '@/components/FehlerStudioView';
 import { KlausurSimulatorView } from '@/components/KlausurSimulatorView';
+import { DuolingoPathView } from '@/components/DuolingoPathView';
 import { AITutorDrawer } from '@/components/AITutorDrawer';
 import { FormulaModal } from '@/components/FormulaModal';
 
@@ -66,13 +67,23 @@ export default function Home() {
               />
             )}
 
+            {activeSection === 'path' && (
+              <DuolingoPathView
+                onOpenTutor={handleOpenTutor}
+                onNavigateToKlausur={() => handleNavigate('klausur')}
+                onNavigateToStudio={() => handleNavigate('studio')}
+              />
+            )}
+
             {activeSection === 'arena' && (
               <ArenaView onOpenTutor={handleOpenTutor} />
             )}
 
             {activeSection === 'studio' && <FehlerStudioView />}
 
-            {activeSection === 'klausur' && <KlausurSimulatorView />}
+            {activeSection === 'klausur' && (
+              <KlausurSimulatorView onOpenTutor={handleOpenTutor} />
+            )}
           </div>
         </main>
       </div>

@@ -122,18 +122,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => onNavigate('arena')}
+                    onClick={() => onNavigate('path')}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary-hover transition-colors shadow-sm"
                   >
                     <Bolt className="w-4 h-4" />
-                    <span>Heutiges Workout starten</span>
+                    <span>Duolingo-Lernpfad fortsetzen</span>
                   </button>
                   <button
-                    onClick={() => onNavigate('studio')}
+                    onClick={() => onNavigate('klausur')}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-secondary text-white font-bold text-sm hover:bg-secondary-hover transition-colors shadow-xs"
+                  >
+                    <Calculator className="w-4 h-4" />
+                    <span>Klausur-Simulation (90 Min)</span>
+                  </button>
+                  <button
+                    onClick={() => onNavigate('arena')}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-variant text-text-primary font-bold text-sm hover:bg-secondary-container transition-colors border border-border-hairline"
                   >
                     <SlidersHorizontal className="w-4 h-4" />
-                    <span>Lernplan anpassen</span>
+                    <span>Trainings-Arena</span>
                   </button>
                 </div>
                 <div className="flex items-center gap-2 text-text-muted font-mono text-xs">

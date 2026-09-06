@@ -37,24 +37,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: LayoutGrid,
     },
     {
-      id: 'arena',
-      label: 'Buchungs-Arena',
-      icon: Edit3,
-    },
-    {
-      id: 'ai-tutor',
-      label: '1-Klick KI-Tutor',
-      icon: Brain,
-    },
-    {
-      id: 'studio',
-      label: 'Fehler-Studio Folge 1-3',
-      icon: FileCheck2,
+      id: 'path',
+      label: 'Lernpfad (Duolingo)',
+      icon: GraduationCap,
     },
     {
       id: 'klausur',
       label: 'Klausur-Simulator',
       icon: CheckSquare,
+    },
+    {
+      id: 'arena',
+      label: 'Buchungs-Arena',
+      icon: Edit3,
+    },
+    {
+      id: 'studio',
+      label: 'Fehler-Studio Rabia',
+      icon: FileCheck2,
+    },
+    {
+      id: 'ai-tutor',
+      label: '1-Klick KI-Tutor',
+      icon: Brain,
     },
   ];
 
