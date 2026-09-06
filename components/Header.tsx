@@ -77,11 +77,16 @@ export const Header: React.FC<HeaderProps> = ({
             <span>KI-Copilot</span>
           </button>
 
-          {/* Countdown Pill */}
-          <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container text-on-primary-container border border-blue-200">
+          {/* Countdown Pill -> Navigates to Lernplan */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('lernplan')}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-container hover:bg-blue-100 text-on-primary-container border border-blue-200 transition-colors cursor-pointer"
+            title="Offiziellen JLU-Lernplan öffnen"
+          >
             <Timer className="w-4 h-4 text-primary shrink-0" />
             <span className="text-xs font-bold tracking-tight">Noch 18 Tage bis zur Klausur</span>
-          </div>
+          </button>
 
           {/* Rabia's Progress Widget */}
           <div className="flex items-center gap-2.5 pl-2 border-l border-border-hairline">

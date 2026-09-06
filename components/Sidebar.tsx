@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Calculator,
   FileText,
+  Calendar,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -32,6 +33,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   className = '',
 }) => {
   const navItems = [
+    {
+      id: 'lernplan',
+      label: 'Offizieller Lernplan',
+      icon: Calendar,
+      badge: '18 Tage',
+    },
     {
       id: 'rabia_notes',
       label: 'Rabias Notizen (Folge 1–3)',

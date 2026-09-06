@@ -645,4 +645,345 @@ export const examSimulations: ExamSimulation[] = [
       },
     ],
   },
+
+  // KLAUSUR 4: TEILPRÜFUNG 3 - RABIA-SPEZIAL: DIE WHATSAPP-KLAUSURFALLEN (FOLGE 1-3)
+  {
+    id: 'klausur-4',
+    title: 'Teilprüfung 3: Rabia-Spezial — Die WhatsApp-Klausurfallen',
+    subtitle: 'Fokusprüfung zu den 17 handschriftlichen Problemstellen aus Rabias Notizen (Folge 1 bis 3)',
+    semester: 'Wintersemester 2024/25',
+    examiners: 'Prof. Dr. Corinna Ewelt-Knauer (Financial Accounting)',
+    durationMinutes: 30,
+    totalPoints: 30,
+    passingScore: 15,
+    exercises: [
+      {
+        id: 'k4-1',
+        number: 'Aufgabe 1',
+        title: 'Externes vs. Internes Rechnungswesen (Rabia Notiz 1.1)',
+        category: 'exam',
+        unit: 'Folge 1: Grundlagen',
+        professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+        points: 5,
+        scenario:
+          'In der JLU-Klausur steht folgende Behauptung: "Das externe Rechnungswesen dient vorrangig der Überprüfung der Wirtschaftlichkeit betrieblicher Produktionsprozesse sowie der internen Liquiditätssteuerung."',
+        question: 'Wie ist diese Aussage nach HGB und universitärem Standard zu beurteilen?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k4-1-opt1',
+            text: 'FALSCH: Die Prüfung der Wirtschaftlichkeit und die interne Steuerung gehören zum internen Rechnungswesen (Kosten- und Leistungsrechnung bei Prof. Wöhrmann). Das externe RW (HGB) dient der Dokumentation (§ 238 HGB), der Rechenschaftslegung und dem Gläubigerschutz!',
+            isCorrect: true,
+            explanation:
+              'Exakt! Rabia hatte dies auf ihrem Blatt rot markiert. Extern = HGB, Gläubigerschutz, Rechenschaft. Intern = Wirtschaftlichkeit, Kostenkontrolle, Planung.',
+          },
+          {
+            id: 'k4-1-opt2',
+            text: 'RICHTIG: Jedes moderne Unternehmen muss im externen Jahresabschluss zwingend die Wirtschaftlichkeit seiner Maschinen nachweisen.',
+            isCorrect: false,
+            explanation: 'Falsch! Das HGB schreibt keinen Wirtschaftlichkeitsnachweis vor.',
+          },
+        ],
+        hints: ['Wer sind die Adressaten des externen RW? Externe Dritte wie Banken und das Finanzamt.'],
+        jluNotes: '§ 238 HGB Dokumentations- & Rechenschaftspflicht.',
+        tags: ['Externes RW', 'Internes RW', 'Rabia Notiz'],
+      },
+      {
+        id: 'k4-2',
+        number: 'Aufgabe 2',
+        title: 'Der Flohmarktbesuch: Möbelkauf bar (Rabia Notiz 1.4)',
+        category: 'exam',
+        unit: 'Folge 1: Bilanzveränderungen',
+        professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+        points: 5,
+        scenario:
+          'Bibi kauft auf dem Flohmarkt Vintage-Stühle für 450,00 € und bezahlt sofort bar aus der Kasse. Rabia notierte: "Die Vermögensstruktur ändert sich, Bilanzsumme bleibt gleich?"',
+        question: 'Welche Bilanzwirkung tritt ein und wie verändert sich die Bilanzsumme?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k4-2-opt1',
+            text: 'Reiner Aktivtausch: BGA (Aktivkonto) nimmt um 450 € im Soll zu, Kasse (Aktivkonto) nimmt um 450 € im Haben ab. Die Bilanzsumme bleibt vollkommen unverändert!',
+            isCorrect: true,
+            explanation:
+              'Richtig! Nur Aktivkonten sind berührt (+450 € - 450 € = 0 €). Lediglich die Vermögensstruktur wandelt sich von liquiden Mitteln in Sachanlagen.',
+          },
+          {
+            id: 'k4-2-opt2',
+            text: 'Bilanzverkürzung um 450 €, da Geld die Kasse verlässt.',
+            isCorrect: false,
+            explanation: 'Falsch! Es geht kein Wert verloren, Möbel treten an die Stelle des Bargelds.',
+          },
+        ],
+        hints: ['BGA und Kasse sind beides Aktivkonten.'],
+        jluNotes: 'Aktivtausch berührt ausschließlich Aktivkonten.',
+        tags: ['Aktivtausch', 'BGA', 'Kasse', 'Rabia Notiz'],
+      },
+      {
+        id: 'k4-3',
+        number: 'Aufgabe 3',
+        title: 'Küchenmaschine 2.000 €: Anzahlung oder Aktivierung? (Rabia Notiz 2.2)',
+        category: 'exam',
+        unit: 'Folge 2: Wareneinkauf & Anlagevermögen',
+        professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+        points: 5,
+        scenario:
+          'Bibi kauft eine Profi-Küchenmaschine für 2.000,00 € netto (zzgl. 19% USt = 380 €). Die Maschine wird sofort geliefert und abgenommen. Vereinbarung: 30% sofort per Bank (714 €), 70% Restzahlung auf Ziel (1.666 €). Rabia fragte: "Warum ist das keine geleistete Anzahlung und warum steigt die Bilanzsumme um 1.666 €?"',
+        question: 'Welche Begründung ist nach JLU-Lehre und HGB zutreffend?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k4-3-opt1',
+            text: 'Keine Anzahlung, weil die Maschine SOFORT geliefert wurde (Gefahrenübergang vollzogen)! Sie wird sofort voll als BGA aktiviert. Die Bilanzsumme steigt um genau 1.666 €, weil auf der Passivseite Verbindlichkeiten um 1.666 € steigen und auf der Aktivseite netto (+2.000 BGA + 380 Vorsteuer - 714 Bank) ebenfalls +1.666 € verbleiben!',
+            isCorrect: true,
+            explanation:
+              'Perfekt! Eine Anzahlung existiert nur VOR Lieferung. Sobald die Ware da ist, erfolgt die Vollaktivierung im Sachanlagevermögen!',
+          },
+          {
+            id: 'k4-3-opt2',
+            text: 'Es ist eine Anzahlung, weil 30% sofort bezahlt wurden, und die Bilanzsumme steigt um 2.380 €.',
+            isCorrect: false,
+            explanation: 'Falsch! Eine Anzahlung bei bereits gelieferter Ware existiert im HGB nicht.',
+          },
+        ],
+        hints: ['Gefahrenübergang bereits erfolgt = Vollaktivierung in BGA!'],
+        jluNotes: '§ 253 Abs. 1 HGB Anschaffungskostenprinzip.',
+        tags: ['Küchenmaschine', 'BGA', 'Anzahlung', 'Rabia Notiz'],
+      },
+      {
+        id: 'k4-4',
+        number: 'Aufgabe 4',
+        title: 'Keine Steuer auf Geldtransfers & Bruttorechnung (Rabia Notiz 2.3)',
+        category: 'exam',
+        unit: 'Folge 2: Umsatzsteuer-Logik',
+        professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+        points: 5,
+        scenario:
+          'Rabia rechnete auf ihrem Notizblatt bei einem Bankkredit über 3.000 €: "3.000 : 1,19 = 2.521 € Steuer 479 €". Anschließend notierte sie verwundert: "Warum fällt bei D keine Steuer an?"',
+        question: 'Warum fällt bei der Aufnahme oder Tilgung eines Bankkredits niemals Vorsteuer oder Umsatzsteuer an?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k4-4-opt1',
+            text: 'Reine Geldtransfers (Kredite, Tilgungen, Abhebungen, Einlagen) sind keine Lieferungen oder sonstigen Leistungen nach § 1 Abs. 1 UStG. Geld ist keine Ware. Daher fällt NIEMALS Steuer an!',
+            isCorrect: true,
+            explanation:
+              'Ausgezeichnet! Geldtransaktionen sind nicht steuerbar. Und: Wenn bei Waren die Steuer im Preis enthalten ist, teilt man durch 1,19 (niemals einfach 19% von Brutto abziehen)!',
+          },
+          {
+            id: 'k4-4-opt2',
+            text: 'Weil Banken von der Steuer befreit sind und der Staat die Vorsteuer erst am Jahresende erstattet.',
+            isCorrect: false,
+            explanation: 'Falsch! Geldtransfers unterliegen gar nicht dem Tatbestand des UStG.',
+          },
+        ],
+        hints: ['Geld ist weder eine Ware noch eine Dienstleistung.'],
+        jluNotes: '§ 1 Abs. 1 UStG Steuerbarkeit von Umsätzen.',
+        tags: ['Umsatzsteuer', 'Kredit', 'Geldtransfers', 'Rabia Notiz'],
+      },
+      {
+        id: 'k4-5',
+        number: 'Aufgabe 5',
+        title: 'GuV als Unterkonto des Eigenkapitals (Rabia Notiz 3.1 & 3.3)',
+        category: 'exam',
+        unit: 'Folge 3: GuV & Eigenkapital',
+        professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+        points: 5,
+        scenario:
+          'Rabia notierte auf dem Blatt zu Folge 3: "Auf welcher Seite Aufwand? Auf welcher Ertrag? Warum ist die GuV ein Unterkonto des Eigenkapitals?"',
+        question: 'Warum stehen alle betrieblichen Aufwendungen im SOLL und alle Erträge im HABEN des GuV-Kontos?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k4-5-opt1',
+            text: 'Weil das Eigenkapital ein Passivkonto ist (Minderungen im Soll, Mehrungen im Haben)! Da Aufwendungen das Eigenkapital mindern, stehen sie im SOLL. Da Erträge das Eigenkapital mehren, stehen sie im HABEN!',
+            isCorrect: true,
+            explanation:
+              'Volltreffer! Das GuV-Konto sammelt den Periodenerfolg und füttert das Eigenkapitalkonto auf der Passivseite der Bilanz.',
+          },
+          {
+            id: 'k4-5-opt2',
+            text: 'Weil Aufwendungen Aktivposten sind, die auf der linken Seite stehen müssen.',
+            isCorrect: false,
+            explanation: 'Falsch! Aufwendungen sind kein Vermögen, sondern Werteverzehr.',
+          },
+        ],
+        hints: ['Passivkonto: Zugänge im Haben, Abgänge im Soll.'],
+        jluNotes: 'Erfolgskonten als Unterkonten des Eigenkapitals (§ 242 HGB).',
+        tags: ['GuV', 'Eigenkapital', 'Soll an Haben', 'Rabia Notiz'],
+      },
+      {
+        id: 'k4-6',
+        number: 'Aufgabe 6',
+        title: 'Eisherstellung 340 €: Warum KASSE falsch ist! (Rabia Notiz 3.5)',
+        category: 'exam',
+        unit: 'Folge 3: Eisherstellung & Realisationsprinzip',
+        professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+        points: 5,
+        scenario:
+          'Bibi entnimmt dem Lager Früchte für 340,00 € und macht daraus im Eislabor fertiges Eis. Rabia hatte notiert: "Fertige Eis an Kasse" und sich gefragt, warum der Vorgang erfolgsneutral ist.',
+        question: 'Warum ist das Konto Kasse hier grundfalsch und warum ist die Herstellung erfolgsneutral?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k4-6-opt1',
+            text: 'Kasse ist falsch, weil kein Bargeld fließt – die Früchte lagen bereits im Lager! Und der Vorgang ist erfolgsneutral, weil im Gesamtkostenverfahren der Aufwand aus Rohstoffverbrauch (340 € Soll) durch den Ertrag aus Bestandsmehrung an Fertigerzeugnissen (340 € Haben) exakt neutralisiert wird (+340 € - 340 € = 0 €). Gewinn entsteht erst beim späteren Verkauf an Kunden!',
+            isCorrect: true,
+            explanation:
+              'Genial! 1. Kein Geldfluss (Rohstoffe im Haben). 2. Realisationsprinzip: Reines Produzieren und Einfrieren macht noch nicht reicher – erst der Verkauf realisiert den Gewinn!',
+          },
+          {
+            id: 'k4-6-opt2',
+            text: 'Kasse ist richtig, aber man muss noch 19% Vorsteuer hinzurechnen.',
+            isCorrect: false,
+            explanation: 'Falsch! Bei der internen Produktion wird keine Kasse und keine Vorsteuer gebucht.',
+          },
+        ],
+        hints: ['Fließt Geld aus der Kasse? Nein, reine Lagerentnahme!'],
+        jluNotes: 'Realisationsprinzip § 252 Abs. 1 Nr. 4 HGB & GKV nach § 275 HGB.',
+        tags: ['Eisherstellung', 'Kasse', 'Bestandsmehrung', 'GKV', 'Rabia Notiz'],
+      },
+    ],
+  },
+
+  // KLAUSUR 5: TEILPRÜFUNG 4 - ORIGINAL JLU PROBEKLAUSUR KLR (AUFGABEN 10 BIS 16)
+  {
+    id: 'klausur-5',
+    title: 'Teilprüfung 4: Original JLU Probeklausur Kostenrechnung',
+    subtitle: 'Wortgetreue Aufgaben 10 bis 16 der Originalklausur von Prof. Dr. Arnt Wöhrmann',
+    semester: 'Wintersemester 2024/25',
+    examiners: 'Prof. Dr. Arnt Wöhrmann (Managerial Accounting)',
+    durationMinutes: 45,
+    totalPoints: 30,
+    passingScore: 15,
+    exercises: [
+      {
+        id: 'k5-10',
+        number: 'Aufgabe 10',
+        title: 'Begriffsabgrenzungen WMB AG (Original JLU)',
+        category: 'exam',
+        unit: 'KLR LE 2: Abgrenzungsrechnung',
+        professor: 'Prof. Dr. Arnt Wöhrmann',
+        points: 5,
+        scenario:
+          'In den Alpen stürzt eine Lawine auf ein Fertigteillager der WMB AG. Es entsteht ein Schaden von 450.000,00 €.',
+        question: 'Wie ist dieser Lawinenschaden in der Abgrenzungsrechnung der WMB AG einzuordnen?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k5-10-opt1',
+            text: 'Neutraler, außerordentlicher Aufwand (keine Kosten im Sinne der KLR). In der Kostenrechnung wird stattdessen ein kalkulatorisches Wagnis angesetzt.',
+            isCorrect: true,
+            explanation:
+              'Absolut korrekt! Ein Lawinenschaden ist unvorhersehbar und katastrophenartig (außerordentlich). Er fließt als neutraler Aufwand in die GuV, aber nicht als Grundkosten in die KLR.',
+          },
+          {
+            id: 'k5-10-opt2',
+            text: 'Grundkosten (Zweckaufwand), da das Lager zum Geschäftsbetrieb gehört.',
+            isCorrect: false,
+            explanation: 'Falsch! Grundkosten müssen dem regelmäßigen betrieblichen Zweck dienen.',
+          },
+        ],
+        hints: ['Ist eine Naturkatastrophe gewöhnlicher, regelmäßiger Betriebsaufwand? Nein!'],
+        jluNotes: 'Abgrenzung von neutralem Aufwand und kalkulatorischen Wagnissen.',
+        tags: ['KLR', 'Lawinenschaden', 'Neutraler Aufwand', 'Original JLU'],
+      },
+      {
+        id: 'k5-11',
+        number: 'Aufgabe 11',
+        title: 'Plankostenrechnung Karo-Lack (Original JLU)',
+        category: 'exam',
+        unit: 'KLR LE 9: Flexible Plankostenrechnung',
+        professor: 'Prof. Dr. Arnt Wöhrmann',
+        points: 8,
+        scenario:
+          'Die PKW-Lacke Karo-Lack plant mit Plankosten von 400.000,00 € bei einer Planbeschäftigung von 2.000.000 Litern. Die variablen Kosten betragen 80% (320.000 €). Die tatsächliche Ist-Beschäftigung beträgt 1.500.000 Liter bei Ist-Kosten von 350.000,00 €.',
+        question: 'Wie hoch sind die Sollkosten (Ks), die Beschäftigungsabweichung (BA) und die Verbrauchsabweichung (VA)?',
+        type: 'calculation',
+        calculationFields: [
+          {
+            id: 'k5-11-ks',
+            label: 'Sollkosten Ks (€)',
+            correctValue: 320000,
+            tolerance: 0,
+            explanation: 'Fixkosten Kf = 80.000 €. Variable Stückkosten kv = 320.000 / 2.000.000 = 0,16 €/L. Ks = 80.000 + 0,16 * 1.500.000 = 320.000 €.',
+          },
+          {
+            id: 'k5-11-ba',
+            label: 'Beschäftigungsabweichung BA (€)',
+            correctValue: 20000,
+            tolerance: 0,
+            explanation: 'kp = 400.000 / 2.000.000 = 0,20 €/L. Kverr = 0,20 * 1.500.000 = 300.000 €. BA = Ks - Kverr = 320.000 - 300.000 = +20.000 € (Kosten der Unterbeschäftigung).',
+          },
+          {
+            id: 'k5-11-va',
+            label: 'Verbrauchsabweichung VA (€)',
+            correctValue: 30000,
+            tolerance: 0,
+            explanation: 'VA = Kist - Ks = 350.000 - 320.000 = +30.000 € (Unwirtschaftlichkeit).',
+          },
+        ],
+        hints: ['Kf = 20% von 400.000 = 80.000 €. kv = 320.000 / 2.000.000 = 0,16 €.'],
+        jluNotes: 'Original JLU Klausur WS 24/25 Aufgabe 11.',
+        tags: ['Plankostenrechnung', 'Karo-Lack', 'BA', 'VA', 'Original JLU'],
+      },
+      {
+        id: 'k5-13',
+        number: 'Aufgabe 13',
+        title: 'Break-Even-Analyse Guido Skripte (Original JLU)',
+        category: 'exam',
+        unit: 'KLR LE 11: Break-Even-Analyse',
+        professor: 'Prof. Dr. Arnt Wöhrmann',
+        points: 5,
+        scenario:
+          'Guido verkauft Notizskripte für 10,00 € das Stück. Ein Skript umfasst 50 Seiten. Die variablen Druckkosten betragen 0,10 € je Seite zzgl. 1,00 € feste Bindung je Skript. Zur Maschineneinrichtung fallen fixe Kosten von 200,00 € an.',
+        question: 'Wie viele Skripte muss Guido verkaufen, um die Gewinnschwelle (Break-Even-Point) zu erreichen?',
+        type: 'calculation',
+        calculationFields: [
+          {
+            id: 'k5-13-bep',
+            label: 'Break-Even-Menge x_BEP (Stück)',
+            correctValue: 50,
+            tolerance: 0,
+            explanation: 'Variable Stückkosten kv = 50 * 0,10 € + 1,00 € = 6,00 €. Stück-DB db = 10,00 € - 6,00 € = 4,00 €. x_BEP = Kf / db = 200 € / 4 € = 50 Stück!',
+          },
+        ],
+        hints: ['kv = 50 * 0,10 + 1,00 = 6,00 €. db = 10 - 6 = 4 €.'],
+        jluNotes: 'Original JLU Klausur WS 24/25 Aufgabe 13.',
+        tags: ['Break-Even', 'Guido', 'Deckungsbeitrag', 'Original JLU'],
+      },
+      {
+        id: 'k5-16',
+        number: 'Aufgabe 16',
+        title: 'Kalkulatorischer Unternehmerlohn Erwin GmbH (Original JLU)',
+        category: 'exam',
+        unit: 'KLR LE 4: Kalkulatorische Kosten',
+        professor: 'Prof. Dr. Arnt Wöhrmann',
+        points: 4,
+        scenario:
+          'Erwin ist alleiniger Geschäftsführer der Erwin Holzverarbeitung GmbH. Er möchte in seiner Kosten- und Leistungsrechnung einen kalkulatorischen Unternehmerlohn von 80.000,00 € ansetzen.',
+        question: 'Darf Erwin bei einer GmbH einen kalkulatorischen Unternehmerlohn in der KLR ansetzen?',
+        type: 'multiple_choice',
+        mcOptions: [
+          {
+            id: 'k5-16-opt1',
+            text: 'NEIN: Bei einer Kapitalgesellschaft (GmbH / AG) ist das Gehalt des Geschäftsführers bereits als Personalaufwand in der Finanzbuchhaltung erfasst (Zweckaufwand = Grundkosten). Ein kalkulatorischer Unternehmerlohn ist NUR bei Einzelunternehmen und Personengesellschaften zulässig!',
+            isCorrect: true,
+            explanation:
+              'Klassische JLU-Klausurfalle! Bei der GmbH bezieht Erwin ein echtes Gehalt (Aufwand). Daher existiert kein kalkulatorischer Unternehmerlohn.',
+          },
+          {
+            id: 'k5-16-opt2',
+            text: 'JA: Jeder Geschäftsführer darf frei wählen, ob er ein Gehalt oder einen kalkulatorischen Unternehmerlohn ansetzt.',
+            isCorrect: false,
+            explanation: 'Falsch! Das Trennungsprinzip der Kapitalgesellschaft verbietet kalk. Unternehmerlohn.',
+          },
+        ],
+        hints: ['Ist eine GmbH eine Personen- oder eine Kapitalgesellschaft?'],
+        jluNotes: 'Kalkulatorischer Unternehmerlohn nur bei Einzelunternehmen und Personengesellschaften.',
+        tags: ['Kalkulatorischer Unternehmerlohn', 'Erwin GmbH', 'Original JLU'],
+      },
+    ],
+  },
 ];
+

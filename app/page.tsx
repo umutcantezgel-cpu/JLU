@@ -9,12 +9,14 @@ import { FehlerStudioView } from '@/components/FehlerStudioView';
 import { KlausurSimulatorView } from '@/components/KlausurSimulatorView';
 import { DuolingoPathView } from '@/components/DuolingoPathView';
 import { RabiaNotesView } from '@/components/RabiaNotesView';
+import { LernplanView } from '@/components/LernplanView';
 import { AITutorDrawer } from '@/components/AITutorDrawer';
 import { FormulaModal } from '@/components/FormulaModal';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string>('rabia_notes'); // Default to Rabia Notes to highlight top focus!
   const [selectedArenaExerciseId, setSelectedArenaExerciseId] = useState<string>('rabia-5');
+  const [selectedExamId, setSelectedExamId] = useState<string>('klausur-1');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isTutorOpen, setIsTutorOpen] = useState<boolean>(false);
   const [tutorContext, setTutorContext] = useState<string>(
@@ -29,7 +31,10 @@ export default function Home() {
     setIsTutorOpen(true);
   };
 
-  const handleNavigate = (section: string) => {
+  const handleNavigate = (section: string, param?: string) => {
+    if (section === 'klausur' && param) {
+      setSelectedExamId(param);
+    }
     setActiveSection(section);
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -97,10 +102,26 @@ export default function Home() {
               />
             )}
 
+            {activeSection === 'lernplan' && (
+              <LernplanView
+                onNavigate={handleNavigate}
+                onOpenTutor={(context) => handleOpenTutor(context)}
+                onStartExam={(examId) => {
+                  setSelectedExamId(examId);
+                  setActiveSection('klausur');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            )}
+
             {activeSection === 'studio' && <FehlerStudioView />}
 
             {activeSection === 'klausur' && (
-              <KlausurSimulatorView onOpenTutor={handleOpenTutor} />
+              <KlausurSimulatorView
+                initialExamId={selectedExamId}
+                onOpenTutor={handleOpenTutor}
+                onNavigate={handleNavigate}
+              />
             )}
           </div>
         </main>
