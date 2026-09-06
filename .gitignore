@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build
+dist/
+build/
+.next/
+out/
+
+# Environment variables & API keys
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Large binaries & lecture raw files
+*.pdf
+*.jpeg
+*.jpg
+*.png
+
+# System & Editor
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
