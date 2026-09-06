@@ -330,4 +330,279 @@ export const rabiaWorkoutExercises: Exercise[] = [
     jluNotes: 'Strikte Trennung von Kapitalrückzahlung (Tilgung) und Kapitalüberlassungskosten (Zinsaufwand nach § 275 HGB).',
     tags: ['Annuitätendarlehen', 'Zinsaufwand', 'Tilgung', 'Rabia Notiz'],
   },
+  {
+    id: 'rabia-11',
+    number: 'R 1.6',
+    title: 'Kredittilgung vs. Zinsaufwand auflösen',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 1 - Bilanzveränderungen',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 10,
+    scenario:
+      'In ihren Notizen schrieb Rabia: "Die 4k wird vom BK abgebucht und wird von der Bank gezogen. Soll Bankkredit Passivk. 4.000k an Haben Bank Aktivk. 4.000k. Warum ist das keine Zinszahlung?"',
+    question:
+      'Wie lautet die korrekte buchhalterische Einordnung des Buchungssatzes "Bankkredit 4.000 € an Bank 4.000 €"?',
+    type: 'multiple_choice',
+    mcOptions: [
+      {
+        id: 'opt1',
+        text: 'Es handelt sich um eine reine Kredittilgung (Bilanzverkürzung, erfolgsneutral). Das Passivkonto Bankkredit mindert sich im Soll, das Aktivkonto Bank mindert sich im Haben. Zinsen würden als Aufwand im Soll eines Erfolgskontos (Zinsaufwand an Bank) erfasst.',
+        isCorrect: true,
+        explanation:
+          'Exakt! Tilgung baut bestehende Schulden ab (erfolgsneutral). Zinsen hingegen vergüten die Geldüberlassung und sind Aufwand in der GuV.',
+      },
+      {
+        id: 'opt2',
+        text: 'Es handelt sich um eine Zinszahlung, weil Geld an die Bank abfließt und das Eigenkapital mindert.',
+        isCorrect: false,
+        explanation: 'Falsch! Tilgung mindert die Verbindlichkeit, nicht das Eigenkapital.',
+      },
+      {
+        id: 'opt3',
+        text: 'Es handelt sich um einen Aktiv-Passiv-Tausch mit Bilanzverlängerung.',
+        isCorrect: false,
+        explanation: 'Falsch! Beide Konten nehmen ab, also Bilanzverkürzung (Aktiv-Passiv-Minderung).',
+      },
+    ],
+    hints: [
+      'Passivkonto im Soll = Schulden nehmen ab.',
+      'Aktivkonto im Haben = Bankguthaben nimmt ab.',
+      'Zinsen berühren das GuV-Konto Zinsaufwand, nicht das Darlehenskonto!',
+    ],
+    jluNotes: '§ 266 Abs. 3 C. Verbindlichkeiten: Tilgung mindert den Passivposten direkt.',
+    tags: ['Folge 1', 'Tilgung', 'Zinsen', 'Bilanzverkürzung', 'Rabia Notiz'],
+  },
+  {
+    id: 'rabia-12',
+    number: 'R 1.7',
+    title: 'Inventar vs. Bilanz: Form & Detaillierung',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 1 - Gesetzliche Grundlagen',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 10,
+    scenario:
+      'Rabia notierte: "Inventar -> detaillierte Liste von Waren und Gegenstände des Unternehmers. Zeigt wie viel das Unternehmen zu einem bestimmten Zeitpunkt besitzt. Die Bilanz kann man durch das Inventar besser darstellen."',
+    question:
+      'Welches wesentliche Merkmal unterscheidet das Inventar nach § 240 HGB von der Bilanz nach § 266 HGB?',
+    type: 'multiple_choice',
+    mcOptions: [
+      {
+        id: 'opt1',
+        text: 'Das Inventar ist in Staffelform aufgestellt, enthält Mengengerüste (Stück, kg, Liter) und Einzelausweise. Die Bilanz ist in Kontenform (T-Form: Aktiva/Passiva) aufgestellt, fasst Vermögen und Schulden aggregiert zusammen und enthält nur Euro-Beträge.',
+        isCorrect: true,
+        explanation:
+          'Ausgezeichnet! Das Inventar ist das detaillierte Mengengerüst aus der Inventur. Die Bilanz ist die gesetzlich verdichtete Übersicht in Kontenform.',
+      },
+      {
+        id: 'opt2',
+        text: 'Das Inventar wird in Kontenform geführt, die Bilanz hingegen in Staffelform.',
+        isCorrect: false,
+        explanation: 'Genau umgekehrt! Inventar = Staffelform, Bilanz = Kontenform.',
+      },
+      {
+        id: 'opt3',
+        text: 'Die Bilanz muss zwingend alle einzelnen Gegenstände mit Mengenangaben aufführen, das Inventar fasst sie zusammen.',
+        isCorrect: false,
+        explanation: 'Falsch! Die Bilanz fasst zusammen (§ 266 HGB), das Inventar listet einzeln (§ 240 HGB).',
+      },
+    ],
+    hints: [
+      'Staffelform = Liste untereinander mit Art, Menge und Einzelpreis.',
+      'Kontenform = T-Konto mit zwei Seiten (Aktiva links, Passiva rechts).',
+    ],
+    jluNotes: '§ 240 HGB (Inventar) vs. § 242 & § 266 HGB (Bilanz).',
+    tags: ['Folge 1', 'Inventar', 'Bilanz', 'HGB', 'Rabia Notiz'],
+  },
+  {
+    id: 'rabia-13',
+    number: 'R 2.1',
+    title: 'Aktivtausch vs. Bilanzverkürzung im Wareneinkauf',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 2 - Bilanzveränderungen',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 10,
+    scenario:
+      'Rabia notierte auf dem Blatt zu Folge 2: "Aktivtausch zwischen Vorräte und Bank/Kasse... kein Aktivtausch Verbindlichkeit und Bank".',
+    question:
+      'Welcher der folgenden Geschäftsvorfälle stellt einen reinen Aktivtausch dar?',
+    type: 'multiple_choice',
+    mcOptions: [
+      {
+        id: 'opt1',
+        text: 'Bibi kauft Vorräte (Erdbeeren) für 150 € und bezahlt sofort bar aus der Kasse.',
+        isCorrect: true,
+        explanation:
+          'Richtig! Vorräte (Aktivkonto Soll +150 €) und Kasse (Aktivkonto Haben -150 €). Nur die Aktivseite ist berührt -> reiner Aktivtausch, Bilanzsumme bleibt gleich!',
+      },
+      {
+        id: 'opt2',
+        text: 'Bibi überweist eine offene Lieferantenverbindlichkeit von 750 € per Bank.',
+        isCorrect: false,
+        explanation: 'Falsch! Verbindlichkeiten (Passivkonto) und Bank (Aktivkonto) -> Bilanzverkürzung.',
+      },
+      {
+        id: 'opt3',
+        text: 'Bibi kauft eine Eismaschine auf Ziel (Rechnung).',
+        isCorrect: false,
+        explanation: 'Falsch! BGA (Aktivkonto) und Verbindlichkeiten (Passivkonto) -> Bilanzverlängerung.',
+      },
+    ],
+    hints: [
+      'Aktivtausch: Beide Konten liegen auf der linken Seite (Aktiva).',
+      'Ein Aktivkonto steigt im Soll, ein anderes Aktivkonto sinkt im Haben.',
+    ],
+    jluNotes: 'Vier Bilanzveränderungen: Nur Aktivtausch lässt beide Seiten der Bilanzsumme unverändert.',
+    tags: ['Folge 2', 'Aktivtausch', 'Vorräte', 'Kasse', 'Rabia Notiz'],
+  },
+  {
+    id: 'rabia-14',
+    number: 'R 2.3',
+    title: 'Steuerberechnung & Keine Steuer auf Geldtransfers',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 2 - Umsatzsteuer-Logik',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 15,
+    scenario:
+      'Rabia rechnete bei einem Bankkredit von 3.000 €: "3.000 / 1,19 = 2.521 €, Steuer = 479 €". Danach notierte sie verwirrt: "Steuer falsch berechnet -> Steuer mit im Preis? Warum bei D nicht?"',
+    question:
+      'Warum fällt bei einer Bankkreditaufnahme oder einer Darlehenstilgung KEINE Vorsteuer oder Umsatzsteuer an?',
+    type: 'multiple_choice',
+    mcOptions: [
+      {
+        id: 'opt1',
+        text: 'Reine Geldtransfers (Kreditaufnahme, Tilgung, Überweisung, Barabhebung) sind keine Lieferungen oder sonstigen Leistungen im Sinne des § 1 Abs. 1 UStG. Umsatzsteuer fällt nur an, wenn ein Unternehmer Waren liefert oder Dienstleistungen erbringt!',
+        isCorrect: true,
+        explanation:
+          'Volltreffer! Geld ist keine Ware. Reine Finanztransaktionen unterliegen niemals der Umsatzsteuer. Zudem: Ist bei Waren die Steuer im Preis enthalten (Brutto), rechnet man Netto = Brutto / 1,19. Man zieht niemals einfach 19% vom Bruttobetrag ab!',
+      },
+      {
+        id: 'opt2',
+        text: 'Weil Banken von der Steuer befreit sind und daher nur 7% Vorsteuer berechnet wird.',
+        isCorrect: false,
+        explanation: 'Falsch! Bei Geldtransfers fällt gar keine Steuer an.',
+      },
+      {
+        id: 'opt3',
+        text: 'Weil die Vorsteuer erst am Jahresende bei der Steuererklärung berechnet wird.',
+        isCorrect: false,
+        explanation: 'Falsch! Vorsteuer bei Warenlieferungen wird sofort gebucht, bei Krediten nie.',
+      },
+    ],
+    hints: [
+      'Ist Geld eine Ware oder Dienstleistung? Nein!',
+      '§ 1 Abs. 1 Nr. 1 UStG: Steuerbar sind nur Lieferungen und sonstige Leistungen.',
+      'Merke: Kredite, Tilgungen, Einlagen und Entnahmen sind immer OHNE Steuer!',
+    ],
+    jluNotes: '§ 1 Abs. 1 UStG & § 4 Nr. 8 UStG (Steuerbefreiung von Krediten).',
+    tags: ['Folge 2', 'Umsatzsteuer', 'Vorsteuer', 'Geldtransfers', 'Rabia Notiz'],
+  },
+  {
+    id: 'rabia-15',
+    number: 'R 2.5',
+    title: 'Rohstoffkauf bar mit 7% ermäßigter Vorsteuer',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 2 - Wareneinkauf',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 10,
+    scenario:
+      'Bibi kauft Bio-Zutaten (Lebensmittel) für 150,00 € netto (7% ermäßigter Steuersatz) und bezahlt den Betrag von 160,50 € sofort bar aus der Kasse.',
+    question:
+      'Wie lautet der vollständige Buchungssatz für diesen Einkauf?',
+    type: 'buchungssatz',
+    buchungssatz: {
+      soll: [
+        { account: 'Vorräte (Rohstoffe)', amount: 150 },
+        { account: 'Vorsteuer (7%)', amount: 10.5 },
+      ],
+      haben: [{ account: 'Kasse', amount: 160.5 }],
+      effect: 'aktivtausch',
+      explanation:
+        'Vorräte (+150 €) und Vorsteuer (+10,50 € Forderung ans Finanzamt) sind Aktivkonten im Soll. Kasse (-160,50 €) ist Aktivkonto im Haben. Reiner Aktivtausch!',
+    },
+    hints: [
+      'Ermäßigter Steuersatz 7% von 150 € = 10,50 €.',
+      'Bruttozahlung an der Kasse = 150 € + 10,50 € = 160,50 €.',
+      'Vorsteuer ist eine Forderung gegenüber dem Finanzamt (Aktivseite).',
+    ],
+    jluNotes: '§ 12 Abs. 2 UStG (7% auf Grundnahrungsmittel) & § 15 UStG.',
+    tags: ['Folge 2', 'Vorräte', 'Vorsteuer 7%', 'Kasse', 'Aktivtausch', 'Rabia Notiz'],
+  },
+  {
+    id: 'rabia-16',
+    number: 'R 3.3',
+    title: 'Warum Aufwendungen im SOLL und Erträge im HABEN stehen',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 3 - GuV & Erfolgskonten',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 10,
+    scenario:
+      'Rabia fragte in ihren Notizen zu Folge 3: "Auf welcher Seite Aufwand? Auf welcher Ertrag? Jahresfehlbetrag Haben?".',
+    question:
+      'Welche Herleitung erklärt logisch und zweifelsfrei, warum Aufwendungen im Soll und Erträge im Haben gebucht werden?',
+    type: 'multiple_choice',
+    mcOptions: [
+      {
+        id: 'opt1',
+        text: 'Das Eigenkapital ist ein Passivkonto: Zunahmen stehen im Haben, Abnahmen im Soll. Weil Erträge das Eigenkapital vermehren, stehen Erträge im Haben. Weil Aufwendungen das Eigenkapital vermindern, stehen Aufwendungen im Soll!',
+        isCorrect: true,
+        explanation:
+          'Genial verstanden! Das GuV-Konto ist das Unterkonto des Eigenkapitals. Minderung des Passivkontos EK = Soll (Aufwand). Mehrung des Passivkontos EK = Haben (Ertrag).',
+      },
+      {
+        id: 'opt2',
+        text: 'Aufwendungen stehen im Soll, weil sie dem Unternehmen gehören (Aktiva), und Erträge stehen im Haben, weil sie Schulden darstellen.',
+        isCorrect: false,
+        explanation: 'Falsch! Aufwendungen und Erträge sind keine Vermögensgegenstände oder Schulden, sondern Stromgrößen des Werteverzehrs bzw. Wertezuwachses.',
+      },
+    ],
+    hints: [
+      'Erinnere dich: Das Eigenkapitalkonto steht auf der Passivseite der Bilanz.',
+      'Passivkonten: Anfangsbestand und Mehrungen im Haben, Minderungen im Soll.',
+    ],
+    jluNotes: 'Erfolgskonten sind Unterkonten des Eigenkapitals (§ 242 HGB).',
+    tags: ['Folge 3', 'GuV', 'Aufwand im Soll', 'Ertrag im Haben', 'Rabia Notiz'],
+  },
+  {
+    id: 'rabia-17',
+    number: 'R 3.4',
+    title: 'Warum die Eisherstellung erfolgsneutral ist & Kasse falsch ist',
+    category: 'rabia_special',
+    unit: 'Rabia Fokus: Folge 3 - Eisherstellung & GuV',
+    professor: 'Prof. Dr. Corinna Ewelt-Knauer',
+    points: 15,
+    scenario:
+      'Rabia notierte auf dem Blatt zu Folge 3.5: "350 € Lager für Herstellung -> warum erfolgsneutral? Warum Fertige Erzeugnisse an Kasse falsch ist?". Sie hatte "Fertige Eis an Kasse" notiert und ein Fragezeichen daran gemacht.',
+    question:
+      'Warum ist bei der Umwandlung von Lagerfrüchten in fertiges Eis das Konto Kasse falsch, und warum ist der Vorgang insgesamt erfolgsneutral?',
+    type: 'multiple_choice',
+    mcOptions: [
+      {
+        id: 'opt1',
+        text: 'Kasse ist falsch, weil kein Bargeld fließt – die Früchte stammen aus dem Lager (Vorräte)! Und der Vorgang ist erfolgsneutral, weil der Aufwand aus dem Rohstoffverbrauch (340 € Soll) durch den gleich hohen Ertrag aus der Bestandsmehrung an Fertigerzeugnissen (340 € Haben) in der GuV exakt kompensiert wird.',
+        isCorrect: true,
+        explanation:
+          'Perfekt! 1. Kein Geldfluss: Rohstoffe verlassen das Lager (RHB im Haben). 2. Erfolgsneutral: Man wird durch bloßes Einfrieren und Pürieren von Früchten noch nicht reicher. Erst der VERKAUF an Kunden realisiert den Gewinn!',
+      },
+      {
+        id: 'opt2',
+        text: 'Kasse ist richtig, weil man dem Mitarbeiter ein Eisgeld auszahlt, aber die Bilanzsumme bleibt gleich.',
+        isCorrect: false,
+        explanation: 'Falsch! Bei der internen Lagerentnahme wird niemals Kasse gebucht.',
+      },
+      {
+        id: 'opt3',
+        text: 'Der Vorgang ist erfolgswirksam, weil das fertige Eis einen höheren Verkaufspreis hat und daher sofort Gewinn entsteht.',
+        isCorrect: false,
+        explanation: 'Falsch! Nach dem Realisationsprinzip (§ 252 Abs. 1 Nr. 4 HGB) darf Gewinn erst beim Verkauf ausgewiesen werden, nicht bei der Produktion!',
+      },
+    ],
+    hints: [
+      'Gab es an der Kasse einen Kassenbon? Nein, reine Lagerumbuchung!',
+      'GKV bucht: Rohstoffaufwand an Vorräte UND Fertigerzeugnisse an Bestandsmehrung.',
+      'Aufwand 340 € - Ertrag 340 € = 0 € Erfolgswirkung!',
+    ],
+    jluNotes: 'Realisationsprinzip § 252 Abs. 1 Nr. 4 HGB & Gesamtkostenverfahren nach § 275 Abs. 2 HGB.',
+    tags: ['Folge 3', 'Eisherstellung', 'Kasse', 'Bestandsmehrung', 'GKV', 'Rabia Notiz'],
+  },
 ];
+

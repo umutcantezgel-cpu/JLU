@@ -15,6 +15,7 @@ import {
   Brain,
   Calculator,
   BookOpen,
+  FileText,
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -120,13 +121,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={() => onNavigate('rabia_notes')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-700 text-white font-bold text-sm hover:bg-emerald-800 transition-colors shadow-sm"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Rabias Notizen (Folge 1–3)</span>
+                    <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[10px] font-black">FOKUS</span>
+                  </button>
                   <button
                     onClick={() => onNavigate('path')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary-hover transition-colors shadow-sm"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary-hover transition-colors shadow-xs"
                   >
                     <Bolt className="w-4 h-4" />
-                    <span>Duolingo-Lernpfad fortsetzen</span>
+                    <span>Duolingo-Lernpfad</span>
                   </button>
                   <button
                     onClick={() => onNavigate('klausur')}

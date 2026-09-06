@@ -28,14 +28,21 @@ import {
 
 interface ArenaViewProps {
   onOpenTutor: (context: string) => void;
+  initialExerciseId?: string;
 }
 
-export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor }) => {
+export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerciseId }) => {
   const [selectedCategory, setSelectedCategory] = useState<
     'all' | 'rabia_special' | 'buchfuehrung' | 'kostenrechnung'
   >('rabia_special');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedExerciseId, setSelectedExerciseId] = useState<string>('rabia-5'); // Default: Küchenmaschine
+  const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
+
+  React.useEffect(() => {
+    if (initialExerciseId) {
+      setSelectedExerciseId(initialExerciseId);
+    }
+  }, [initialExerciseId]);
 
   // Filter exercises
   const filteredExercises = allExercises.filter((ex) => {

@@ -9,6 +9,7 @@ import {
   CheckSquare,
   GraduationCap,
   Calculator,
+  FileText,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -32,14 +33,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     {
-      id: 'dashboard',
-      label: 'Dashboard & Module',
-      icon: LayoutGrid,
+      id: 'rabia_notes',
+      label: 'Rabias Notizen (Folge 1–3)',
+      icon: FileText,
+      badge: 'Fokus!',
     },
     {
       id: 'path',
       label: 'Lernpfad (Duolingo)',
       icon: GraduationCap,
+    },
+    {
+      id: 'dashboard',
+      label: 'Dashboard & Module',
+      icon: LayoutGrid,
     },
     {
       id: 'klausur',
@@ -113,7 +120,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   }`}
                 >
                   <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                  <span className="truncate">{item.label}</span>
+                  <span className="truncate flex-1">{item.label}</span>
+                  {item.badge && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950 shrink-0 shadow-xs">
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               );
             })}

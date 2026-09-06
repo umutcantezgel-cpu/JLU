@@ -8,11 +8,13 @@ import { ArenaView } from '@/components/ArenaView';
 import { FehlerStudioView } from '@/components/FehlerStudioView';
 import { KlausurSimulatorView } from '@/components/KlausurSimulatorView';
 import { DuolingoPathView } from '@/components/DuolingoPathView';
+import { RabiaNotesView } from '@/components/RabiaNotesView';
 import { AITutorDrawer } from '@/components/AITutorDrawer';
 import { FormulaModal } from '@/components/FormulaModal';
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<string>('dashboard');
+  const [activeSection, setActiveSection] = useState<string>('rabia_notes'); // Default to Rabia Notes to highlight top focus!
+  const [selectedArenaExerciseId, setSelectedArenaExerciseId] = useState<string>('rabia-5');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isTutorOpen, setIsTutorOpen] = useState<boolean>(false);
   const [tutorContext, setTutorContext] = useState<string>(
@@ -60,6 +62,19 @@ export default function Home() {
         {/* Main Central Viewport Container */}
         <main className="flex-1 lg:pl-[280px] p-4 sm:p-6 lg:p-8 min-w-0 transition-all duration-200">
           <div className="max-w-7xl mx-auto w-full">
+            {activeSection === 'rabia_notes' && (
+              <RabiaNotesView
+                onSelectExercise={(exercise) => {
+                  setSelectedArenaExerciseId(exercise.id);
+                  handleNavigate('arena');
+                }}
+                onOpenTutor={(prompt, context) => {
+                  setTutorContext(context);
+                  setIsTutorOpen(true);
+                }}
+              />
+            )}
+
             {activeSection === 'dashboard' && (
               <DashboardView
                 onNavigate={handleNavigate}
@@ -76,7 +91,10 @@ export default function Home() {
             )}
 
             {activeSection === 'arena' && (
-              <ArenaView onOpenTutor={handleOpenTutor} />
+              <ArenaView
+                onOpenTutor={handleOpenTutor}
+                initialExerciseId={selectedArenaExerciseId}
+              />
             )}
 
             {activeSection === 'studio' && <FehlerStudioView />}
