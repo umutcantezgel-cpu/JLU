@@ -52,7 +52,7 @@ export default function Home() {
       />
 
       {/* Main Structural Framework */}
-      <div className="flex-1 flex pt-20">
+      <div className="flex-1 flex pt-16">
         
         {/* Unified Sidebar Navigation (Desktop persistent + Mobile slide-over) */}
         <Sidebar
@@ -64,9 +64,9 @@ export default function Home() {
           onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
-        {/* Main Central Viewport Container */}
-        <main className="flex-1 lg:pl-[280px] p-4 sm:p-6 lg:p-8 min-w-0 transition-all duration-200">
-          <div className="max-w-7xl mx-auto w-full">
+        {/* Main Central Viewport Container with generous breathing room */}
+        <main className="flex-1 lg:pl-[270px] p-5 sm:p-8 lg:p-10 min-w-0 transition-all duration-200">
+          <div className="max-w-6xl mx-auto w-full">
             {activeSection === 'rabia_notes' && (
               <RabiaNotesView
                 onSelectExercise={(exercise) => {

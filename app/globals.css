@@ -1,42 +1,52 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #165a97;
-  --color-primary-hover: #124878;
-  --color-primary-container: #eaf7ff;
-  --color-on-primary-container: #0b3259;
-  --color-primary-fixed: #dbeafe;
-  --color-on-primary-fixed: #0b3259;
-  --color-secondary: #0b3259;
-  --color-secondary-container: #e2e8f0;
-  --color-secondary-fixed: #d3e3ff;
-  --color-on-secondary-fixed: #001c39;
-  --color-tertiary: #d97706;
-  --color-tertiary-fixed: #ffdcc3;
-  --color-on-tertiary-fixed: #2f1500;
+  /* Apple Signature Color Palette (Human Interface Guidelines inspired) */
+  --color-primary: #0071e3;
+  --color-primary-hover: #0077ed;
+  --color-primary-container: #f0f6fe;
+  --color-on-primary-container: #003a70;
+  --color-primary-fixed: #e5f1ff;
+  --color-on-primary-fixed: #002e5c;
+  
+  --color-secondary: #1d1d1f;
+  --color-secondary-container: #f5f5f7;
+  --color-secondary-fixed: #e5e5ea;
+  --color-on-secondary-fixed: #1c1c1e;
+  
+  --color-tertiary: #f56300;
+  --color-tertiary-fixed: #fff1e5;
+  --color-on-tertiary-fixed: #4a1800;
+  
   --color-surface: #ffffff;
-  --color-surface-variant: #f1f5f9;
-  --color-surface-container-low: #f8fafc;
-  --color-surface-container: #eaedff;
-  --color-surface-container-high: #e2e7ff;
+  --color-surface-variant: #f5f5f7;
+  --color-surface-container-low: #fafafc;
+  --color-surface-container: #f2f2f7;
+  --color-surface-container-high: #e5e5ea;
   --color-surface-bright: #ffffff;
-  --color-background: #f8fafc;
-  --color-border-hairline: #e2e8f0;
-  --color-outline: #cbd5e1;
-  --color-text-primary: #0f172a;
-  --color-text-muted: #64748b;
-  --color-on-surface: #0f172a;
-  --color-on-surface-variant: #475569;
+  
+  /* Apple Grouped Background Canvas */
+  --color-background: #f5f5f7;
+  --color-border-hairline: rgba(0, 0, 0, 0.07);
+  --color-outline: #d2d2d7;
+  
+  --color-text-primary: #1d1d1f;
+  --color-text-muted: #86868b;
+  --color-on-surface: #1d1d1f;
+  --color-on-surface-variant: #515154;
   --color-on-primary: #ffffff;
   --color-on-secondary: #ffffff;
-  --color-success: #15803d;
-  --color-success-container: #e5f0cf;
-  --color-on-success-container: #14532d;
-  --color-error: #b91c1c;
-  --color-error-container: #fee2e2;
-  --color-on-error-container: #7f1d1d;
+  
+  --color-success: #34c759;
+  --color-success-container: #eafaf1;
+  --color-on-success-container: #0e4e20;
+  
+  --color-error: #ff3b30;
+  --color-error-container: #ffeceb;
+  --color-on-error-container: #6e0c07;
+  
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
 }
 
 @layer base {
@@ -46,21 +56,54 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.022em;
   }
 }
 
-/* Custom minimal scrollbar */
+/* Apple-like smooth scroll and selection */
+::selection {
+  background-color: rgba(0, 113, 227, 0.18);
+  color: #0071e3;
+}
+
+/* Ultra-refined minimal scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d2d2d7;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #86868b;
+}
+
+/* Apple Card & Glass Utilities */
+.apple-glass {
+  background-color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.apple-card {
+  background-color: #ffffff;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.04), 0 1px 3px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-card-elevated {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
 }

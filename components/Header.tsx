@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { Timer, User, Menu, X, Sparkles, BookOpen } from 'lucide-react';
 
 interface HeaderProps {
@@ -22,95 +21,97 @@ export const Header: React.FC<HeaderProps> = ({
   activeSection,
 }) => {
   const handleToggle = onToggleMobileMenu || onOpenMobileMenu;
+
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 bg-surface/95 backdrop-blur-md border-b border-border-hairline z-50 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-      <div className="h-20 w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        
+    <header className="fixed top-0 left-0 right-0 h-16 apple-glass z-50 transition-all">
+      <div className="h-16 w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between max-w-7xl mx-auto">
         {/* Left: Mobile hamburger + University Branding */}
         <div className="flex items-center gap-3 md:gap-4">
           <button
             onClick={handleToggle}
-            className="p-2 -ml-1 text-secondary hover:bg-surface-variant rounded-lg lg:hidden transition-colors"
+            className="p-2 -ml-1 text-slate-700 hover:bg-black/[0.04] active:bg-black/[0.08] rounded-xl lg:hidden transition-colors"
             aria-label="Navigation umschalten"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
           <div
-            onClick={() => onNavigate?.('dashboard')}
-            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => onNavigate?.('lernplan')}
+            className="flex items-center gap-3 cursor-pointer group select-none"
           >
-            {/* University Crest / Logo Badge */}
-            <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-on-primary font-bold text-base shadow-sm shrink-0">
+            {/* University Monogram Pill */}
+            <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs transition-transform group-hover:scale-105">
               JLU
             </div>
 
-            {/* University & Chair Name */}
+            {/* University & Module Name */}
             <div className="flex flex-col">
-              <span className="font-bold text-sm sm:text-base text-secondary leading-tight tracking-tight">
-                Justus-Liebig-Universität Gießen
+              <span className="font-semibold text-xs sm:text-sm text-slate-900 leading-tight tracking-tight">
+                Accounting Tutor
               </span>
-              <span className="text-[11px] sm:text-xs text-text-muted hidden sm:inline leading-normal">
-                FB 02 Wirtschaftswissenschaften · Prof. Dr. Ewelt-Knauer &amp; Prof. Dr. Wöhrmann
+              <span className="text-[11px] text-slate-500 hidden sm:inline leading-none mt-0.5">
+                FB 02 Wirtschaftswissenschaften · Gießen
               </span>
             </div>
           </div>
 
-          {/* Module Tag */}
-          <div className="hidden xl:flex items-center px-3 py-1 rounded-full bg-surface-variant border border-border-hairline ml-2">
-            <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
+          {/* Module Subtle Pill */}
+          <div className="hidden xl:flex items-center px-2.5 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.04] ml-2">
+            <span className="text-[10px] font-medium text-slate-600 tracking-tight">
               Buchführung &amp; Kostenrechnung
             </span>
           </div>
         </div>
 
-        {/* Right: Exam Countdown & Rabia Profile */}
-        <div className="flex items-center gap-2 sm:gap-4">
-          
+        {/* Right: Actions & Student Status */}
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* AI Copilot Quick Launcher Button */}
           <button
             onClick={onOpenTutor}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-xs transition-colors border border-primary/20"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0071e3]/10 hover:bg-[#0071e3]/15 active:bg-[#0071e3]/20 text-[#0071e3] font-medium text-xs transition-all active:scale-[0.98]"
             title="JLU Accounting Copilot öffnen"
           >
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span>KI-Copilot</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">KI-Copilot</span>
           </button>
 
           {/* Countdown Pill -> Navigates to Lernplan */}
           <button
             type="button"
             onClick={() => onNavigate?.('lernplan')}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-container hover:bg-blue-100 text-on-primary-container border border-blue-200 transition-colors cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/[0.03] hover:bg-black/[0.06] text-slate-700 border border-black/[0.05] transition-all cursor-pointer select-none active:scale-[0.98]"
             title="Offiziellen JLU-Lernplan öffnen"
           >
-            <Timer className="w-4 h-4 text-primary shrink-0" />
-            <span className="text-xs font-bold tracking-tight">Noch 18 Tage bis zur Klausur</span>
+            <Timer className="w-3.5 h-3.5 text-[#0071e3] shrink-0" />
+            <span className="text-xs font-medium tracking-tight">18 Tage bis zur Klausur</span>
           </button>
 
-          {/* Rabia's Progress Widget */}
-          <div className="flex items-center gap-2.5 pl-2 border-l border-border-hairline">
+          {/* Rabia's Progress Pill (Apple Health / Activity style) */}
+          <div
+            onClick={() => onNavigate?.('lernplan')}
+            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none"
+            title="Lernfortschritt anzeigen"
+          >
             <div className="flex flex-col items-end">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-xs sm:text-sm text-text-primary">Rabia</span>
-                <span className="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] font-semibold">
+                <span className="font-semibold text-xs text-slate-800">Rabia</span>
+                <span className="text-[11px] font-mono font-medium text-slate-500">
                   62%
                 </span>
               </div>
-              <div className="w-20 sm:w-24 h-1.5 rounded-full bg-secondary-container overflow-hidden mt-1">
+              <div className="w-16 sm:w-20 h-1 bg-black/[0.06] rounded-full overflow-hidden mt-1">
                 <div
-                  className="h-full bg-primary rounded-full transition-all duration-500"
+                  className="h-full bg-[#0071e3] rounded-full transition-all duration-500"
                   style={{ width: '62%' }}
                 />
               </div>
             </div>
 
             {/* Profile Avatar */}
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-xs">
-              <User className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-full bg-slate-100 border border-black/[0.06] flex items-center justify-center text-slate-700 shadow-2xs group-hover:border-slate-400 transition-colors">
+              <User className="w-3.5 h-3.5" />
             </div>
           </div>
-
         </div>
       </div>
     </header>

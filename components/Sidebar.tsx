@@ -11,6 +11,7 @@ import {
   Calculator,
   FileText,
   Calendar,
+  Sparkles,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -46,6 +47,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: 'Fokus!',
     },
     {
+      id: 'klausur',
+      label: 'Klausur-Simulator (DIN A4)',
+      icon: CheckSquare,
+      badge: 'Neu',
+    },
+    {
       id: 'path',
       label: 'Lernpfad (Duolingo)',
       icon: GraduationCap,
@@ -54,11 +61,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'dashboard',
       label: 'Dashboard & Module',
       icon: LayoutGrid,
-    },
-    {
-      id: 'klausur',
-      label: 'Klausur-Simulator',
-      icon: CheckSquare,
     },
     {
       id: 'arena',
@@ -92,25 +94,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile Backdrop Overlay */}
       {isOpenMobile && (
         <div
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden transition-opacity"
           onClick={onCloseMobile}
         />
       )}
 
-      {/* Persistent Sidebar */}
+      {/* Persistent Apple-style macOS Sidebar */}
       <aside
-        className={`fixed left-0 top-20 bottom-0 w-[280px] bg-surface-container-low border-r border-border-hairline z-40 flex flex-col justify-between py-6 px-4 shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-transform duration-300 ease-in-out ${
-          isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        className={`fixed left-0 top-16 bottom-0 w-[270px] bg-[#fbfbfd]/90 backdrop-blur-xl border-r border-black/[0.06] z-40 flex flex-col justify-between py-6 px-3.5 transition-transform duration-300 ease-out select-none ${
+          isOpenMobile ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
         } ${className}`}
       >
-        <div className="flex flex-col gap-4">
-          <div className="px-2">
-            <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">
-              Lernpfad &amp; Module
+        <div className="flex flex-col gap-5">
+          <div className="px-3 flex items-center justify-between">
+            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              Navigation
             </span>
           </div>
 
-          <nav className="flex flex-col gap-1.5" aria-label="Hauptnavigation">
+          <nav className="flex flex-col gap-1" aria-label="Hauptnavigation">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
@@ -120,16 +122,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   key={item.id}
                   onClick={() => handleSelect(item.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all text-left ${
+                  className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-left active:scale-[0.98] ${
                     isActive
-                      ? 'bg-primary text-on-primary shadow-sm'
-                      : 'text-on-surface-variant hover:bg-surface-variant hover:text-text-primary'
+                      ? 'bg-[#0071e3] text-white shadow-xs'
+                      : 'text-slate-700 hover:bg-black/[0.04] hover:text-slate-950'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                  <span className="truncate flex-1">{item.label}</span>
+                  <Icon
+                    className={`w-4 h-4 shrink-0 transition-colors ${
+                      isActive ? 'text-white' : 'text-slate-500'
+                    }`}
+                  />
+                  <span className="truncate flex-1 tracking-tight">{item.label}</span>
                   {item.badge && (
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950 shrink-0 shadow-xs">
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 transition-colors ${
+                        isActive
+                          ? 'bg-white/20 text-white'
+                          : item.badge === 'Fokus!'
+                          ? 'bg-amber-100 text-amber-900'
+                          : 'bg-black/[0.05] text-slate-600'
+                      }`}
+                    >
                       {item.badge}
                     </span>
                   )}
@@ -140,26 +154,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Quick Action: Formelsammlung */}
           {onOpenFormulas && (
-            <button
-              onClick={onOpenFormulas}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all text-left text-secondary bg-surface-variant/80 hover:bg-secondary-fixed border border-border-hairline"
-            >
-              <Calculator className="w-5 h-5 shrink-0 text-primary" />
-              <span className="truncate">JLU-Formelsammlung</span>
-            </button>
+            <div className="px-1 pt-2 border-t border-black/[0.05]">
+              <button
+                onClick={onOpenFormulas}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-black/[0.04] transition-all text-left active:scale-[0.98]"
+              >
+                <Calculator className="w-4 h-4 shrink-0 text-[#0071e3]" />
+                <span className="truncate tracking-tight">JLU-Formelsammlung</span>
+              </button>
+            </div>
           )}
         </div>
 
-        {/* Bottom JLU Exam Tip Card */}
-        <div className="p-4 rounded-xl bg-surface border border-border-hairline shadow-sm">
-          <div className="flex items-center gap-2 mb-1.5">
-            <GraduationCap className="w-4 h-4 text-tertiary shrink-0" />
-            <span className="text-[11px] font-bold text-tertiary uppercase tracking-wider">
-              JLU Klausur-Tipp
+        {/* Bottom JLU Exam Tip Card (Apple notification card style) */}
+        <div className="p-3.5 rounded-2xl bg-white border border-black/[0.06] shadow-2xs space-y-1.5">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <Sparkles className="w-3 h-3" />
+            </div>
+            <span className="text-[11px] font-semibold text-slate-900 tracking-tight">
+              Klausur-Tipp
             </span>
           </div>
-          <p className="text-xs text-on-surface-variant leading-relaxed">
-            Soll an Haben: Umsatzsteuer-Buchungssätze stets vor Saldo-Ziehung doppelt prüfen.
+          <p className="text-[11px] text-slate-500 leading-relaxed">
+            Vorsteuer (§ 15 UStG) = Forderung im Soll. Niemals mit Umsatzsteuer (Verbindlichkeit) verwechseln!
           </p>
         </div>
       </aside>
