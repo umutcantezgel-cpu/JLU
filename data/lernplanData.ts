@@ -465,7 +465,7 @@ export const jluLernplan: LernplanPhase[] = [
           },
           {
             id: 't-8-2',
-            title: 'Fehler-Nachbesprechung mit Gemini 2.5 Flash Thinking',
+            title: 'Fehler-Nachbesprechung mit Gemini 3.8 Flash Thinking',
             description: 'Jede falsche Aufgabe im Gutachten mit 1 Klick an den KI-Tutor übergeben und vertiefen.',
           },
         ],

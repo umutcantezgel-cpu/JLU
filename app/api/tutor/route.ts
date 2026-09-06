@@ -83,82 +83,95 @@ ${
     : 'Bitte erkläre dies Rabia im universitären JLU-Standard strukturiert nach den 4 Schritten.'
 }`;
 
-    // 1. Try Google Gemini Keys with Gemini 2.5 Flash & Extended Thinking
+    const GEMINI_FLASH_MODELS = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.0-flash'];
+    const OPENROUTER_FLASH_MODELS = [
+      'google/gemini-3.8-flash',
+      'google/gemini-2.5-flash',
+      'google/gemini-2.0-flash-001',
+    ];
+
+    // 1. Try Google Gemini Keys with Gemini 3.8 Flash & Extended Thinking
     for (const key of geminiKeys) {
-      try {
-        const ai = new GoogleGenAI({
-          apiKey: key,
-          httpOptions: {
-            headers: {
-              'User-Agent': 'jlu-accounting-tutor',
-            },
+      const ai = new GoogleGenAI({
+        apiKey: key,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'jlu-accounting-tutor',
           },
-        });
+        },
+      });
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: userPrompt,
-          config: {
-            systemInstruction: SYSTEM_INSTRUCTION,
-            thinkingConfig: {
-              thinkingBudget: -1, // Dynamic extended thinking
+      for (const modelId of GEMINI_FLASH_MODELS) {
+        try {
+          const response = await ai.models.generateContent({
+            model: modelId,
+            contents: userPrompt,
+            config: {
+              systemInstruction: SYSTEM_INSTRUCTION,
+              thinkingConfig: {
+                thinkingBudget: -1, // Dynamic extended thinking
+              },
+              maxOutputTokens: 8192,
+              temperature: 0.2,
             },
-            maxOutputTokens: 8192,
-            temperature: 0.2,
-          },
-        });
-
-        if (response.text) {
-          return NextResponse.json({
-            reply: response.text,
-            source: 'gemini-2.5-flash-thinking',
           });
+
+          if (response.text) {
+            return NextResponse.json({
+              reply: response.text,
+              source: `${modelId}-thinking`,
+            });
+          }
+        } catch (geminiError: any) {
+          console.warn(
+            `Gemini model ${modelId} with key failed, trying next... Error: ${geminiError?.message?.slice(0, 120)}`
+          );
         }
-      } catch (geminiError: any) {
-        console.warn(`Gemini key failed or revoked, rotating to next key... Error: ${geminiError?.message?.slice(0, 120)}`);
       }
     }
 
-    // 2. Try OpenRouter Keys with Gemini 2.5 Flash & Reasoning
+    // 2. Try OpenRouter Keys with Gemini 3.8 Flash & Reasoning
     for (const orKey of openRouterKeys) {
-      try {
-        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${orKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://jlu-accounting-tutor.vercel.app',
-            'X-Title': 'JLU Accounting Tutor',
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [
-              { role: 'system', content: SYSTEM_INSTRUCTION },
-              { role: 'user', content: userPrompt },
-            ],
-            max_tokens: 4096,
-            reasoning: {
-              effort: 'high',
+      for (const orModel of OPENROUTER_FLASH_MODELS) {
+        try {
+          const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${orKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': 'https://jlu-accounting-tutor.vercel.app',
+              'X-Title': 'JLU Accounting Tutor',
             },
-            temperature: 0.2,
-          }),
-        });
+            body: JSON.stringify({
+              model: orModel,
+              messages: [
+                { role: 'system', content: SYSTEM_INSTRUCTION },
+                { role: 'user', content: userPrompt },
+              ],
+              max_tokens: 4096,
+              reasoning: {
+                effort: 'high',
+              },
+              temperature: 0.2,
+            }),
+          });
 
-        if (orResponse.ok) {
-          const orData = await orResponse.json();
-          const reply = orData.choices?.[0]?.message?.content;
-          if (reply) {
-            return NextResponse.json({
-              reply,
-              source: 'openrouter-gemini-2.5-flash-thinking',
-            });
+          if (orResponse.ok) {
+            const orData = await orResponse.json();
+            const reply = orData.choices?.[0]?.message?.content;
+            if (reply) {
+              return NextResponse.json({
+                reply,
+                source: `openrouter-${orModel}-thinking`,
+              });
+            }
+          } else {
+            const errBody = await orResponse.text();
+            console.warn(`OpenRouter model ${orModel} status ${orResponse.status}: ${errBody.slice(0, 100)}`);
           }
-        } else {
-          const errBody = await orResponse.text();
-          console.warn(`OpenRouter key status ${orResponse.status}: ${errBody.slice(0, 100)}`);
+        } catch (orError: any) {
+          console.warn(`OpenRouter request failed for ${orModel}, rotating... Error: ${orError?.message}`);
         }
-      } catch (orError: any) {
-        console.warn(`OpenRouter request failed, rotating... Error: ${orError?.message}`);
       }
     }
 
