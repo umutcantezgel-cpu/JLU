@@ -17,17 +17,32 @@ export const allExercises: Exercise[] = [
   ...kostenrechnungExercises,
 ];
 
-export const getExerciseById = (id: string): Exercise | undefined => {
-  // Check main exercises
-  const found = allExercises.find((ex) => ex.id === id);
-  if (found) return found;
-
-  // Check exam exercises
-  for (const exam of examSimulations) {
-    const examTask = exam.exercises.find((ex) => ex.id === id);
-    if (examTask) return examTask;
+// Pre-build O(1) Hash Map lookup for exercises
+// Optimization: Reduces O(N) array search overhead to O(1) constant time lookup
+const exerciseMap = new Map<string, Exercise>();
+for (const ex of allExercises) {
+  exerciseMap.set(ex.id, ex);
+}
+for (const exam of examSimulations) {
+  for (const ex of exam.exercises) {
+    if (!exerciseMap.has(ex.id)) {
+      exerciseMap.set(ex.id, ex);
+    }
   }
-  return undefined;
+}
+
+export const getExerciseById = (id: string): Exercise | undefined => {
+  return exerciseMap.get(id);
+};
+
+// Helper for O(1) level exercise array initialization
+const getExercises = (ids: string[]): Exercise[] => {
+  const result: Exercise[] = [];
+  for (const id of ids) {
+    const ex = exerciseMap.get(id);
+    if (ex) result.push(ex);
+  }
+  return result;
 };
 
 // 9-Stage Duolingo Learning Journey
@@ -38,15 +53,15 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'Folge 1: Inventar, Bilanz, Tilgung & Flohmarkt',
     category: 'rabia_special',
     requiredXp: 0,
-    exercises: [
-      allExercises.find((e) => e.id === 'rabia-1')!,
-      allExercises.find((e) => e.id === 'rabia-2')!,
-      allExercises.find((e) => e.id === 'rabia-3')!,
-      allExercises.find((e) => e.id === 'rabia-11')!,
-      allExercises.find((e) => e.id === 'rabia-12')!,
-      allExercises.find((e) => e.id === 'bf-f1-1')!,
-      allExercises.find((e) => e.id === 'bf-f1-4')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'rabia-1',
+      'rabia-2',
+      'rabia-3',
+      'rabia-11',
+      'rabia-12',
+      'bf-f1-1',
+      'bf-f1-4',
+    ]),
   },
   {
     id: 2,
@@ -54,16 +69,16 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'Folge 2: 2.000 € Netto, 7% Vorsteuer, Keine Steuer auf Kredite',
     category: 'rabia_special',
     requiredXp: 80,
-    exercises: [
-      allExercises.find((e) => e.id === 'rabia-4')!,
-      allExercises.find((e) => e.id === 'rabia-5')!,
-      allExercises.find((e) => e.id === 'rabia-6')!,
-      allExercises.find((e) => e.id === 'rabia-13')!,
-      allExercises.find((e) => e.id === 'rabia-14')!,
-      allExercises.find((e) => e.id === 'rabia-15')!,
-      allExercises.find((e) => e.id === 'bf-f2-2')!,
-      allExercises.find((e) => e.id === 'bf-f2-4')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'rabia-4',
+      'rabia-5',
+      'rabia-6',
+      'rabia-13',
+      'rabia-14',
+      'rabia-15',
+      'bf-f2-2',
+      'bf-f2-4',
+    ]),
   },
   {
     id: 3,
@@ -71,15 +86,15 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'Folge 3: Aufwand im Soll / Ertrag im Haben, Keine Kasse bei Produktion',
     category: 'buchfuehrung',
     requiredXp: 180,
-    exercises: [
-      allExercises.find((e) => e.id === 'rabia-7')!,
-      allExercises.find((e) => e.id === 'rabia-8')!,
-      allExercises.find((e) => e.id === 'rabia-9')!,
-      allExercises.find((e) => e.id === 'rabia-16')!,
-      allExercises.find((e) => e.id === 'rabia-17')!,
-      allExercises.find((e) => e.id === 'bf-f3-3')!,
-      allExercises.find((e) => e.id === 'bf-f4-1')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'rabia-7',
+      'rabia-8',
+      'rabia-9',
+      'rabia-16',
+      'rabia-17',
+      'bf-f3-3',
+      'bf-f4-1',
+    ]),
   },
   {
     id: 4,
@@ -87,11 +102,11 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'Folge 5 & 6: Vorsteuerkorrektur und Zinstrennung',
     category: 'buchfuehrung',
     requiredXp: 300,
-    exercises: [
-      allExercises.find((e) => e.id === 'rabia-10')!,
-      allExercises.find((e) => e.id === 'bf-f5-2')!,
-      allExercises.find((e) => e.id === 'bf-f6-4')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'rabia-10',
+      'bf-f5-2',
+      'bf-f6-4',
+    ]),
   },
   {
     id: 5,
@@ -99,11 +114,11 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'KLR LE 2, 3 & 4: WMB Lawinenschaden & Unternehmerlohn',
     category: 'kostenrechnung',
     requiredXp: 420,
-    exercises: [
-      allExercises.find((e) => e.id === 'klr-le2-1')!,
-      allExercises.find((e) => e.id === 'klr-le2-2')!,
-      allExercises.find((e) => e.id === 'klr-le4-1')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'klr-le2-1',
+      'klr-le2-2',
+      'klr-le4-1',
+    ]),
   },
   {
     id: 6,
@@ -111,10 +126,10 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'KLR LE 5 & 6: Stufenleiterverfahren & Eis.com BAB',
     category: 'kostenrechnung',
     requiredXp: 540,
-    exercises: [
-      allExercises.find((e) => e.id === 'klr-le5-1')!,
-      allExercises.find((e) => e.id === 'klr-le6-1')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'klr-le5-1',
+      'klr-le6-1',
+    ]),
   },
   {
     id: 7,
@@ -122,12 +137,12 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'Folge 7–10: Rückstellungen, Periodenabgrenzung & Bilanzen',
     category: 'buchfuehrung',
     requiredXp: 660,
-    exercises: [
-      allExercises.find((e) => e.id === 'bf-f7-1')!,
-      allExercises.find((e) => e.id === 'bf-f8-5')!,
-      allExercises.find((e) => e.id === 'bf-f9-2')!,
-      allExercises.find((e) => e.id === 'bf-f10-3')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'bf-f7-1',
+      'bf-f8-5',
+      'bf-f9-2',
+      'bf-f10-3',
+    ]),
   },
   {
     id: 8,
@@ -135,11 +150,11 @@ export const duolingoLevels: LearningLevel[] = [
     subtitle: 'KLR LE 9–12: Hummus Abweichungen & Brennerstuhl AG',
     category: 'kostenrechnung',
     requiredXp: 800,
-    exercises: [
-      allExercises.find((e) => e.id === 'klr-le9-1')!,
-      allExercises.find((e) => e.id === 'klr-le11-1')!,
-      allExercises.find((e) => e.id === 'klr-le12-1')!,
-    ].filter(Boolean),
+    exercises: getExercises([
+      'klr-le9-1',
+      'klr-le11-1',
+      'klr-le12-1',
+    ]),
   },
   {
     id: 9,
