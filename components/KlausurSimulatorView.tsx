@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { examSimulations } from '@/data/examSimulationsData';
 import { ExamSimulation, Exercise } from '@/data/curriculumTypes';
 import { playSuccessSound, playErrorSound, playFanfareSound } from '@/lib/soundEffects';
@@ -46,13 +46,15 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   onNavigate,
 }) => {
   const [selectedExamId, setSelectedExamId] = useState<string>(initialExamId || 'klausur-1');
+  const [prevInitialExamId, setPrevInitialExamId] = useState<string | undefined>(initialExamId);
 
-  // If initialExamId changes from outside (e.g. from Lernplan)
-  useEffect(() => {
+  // Sync prop changes during render to avoid cascading re-renders
+  if (initialExamId !== prevInitialExamId) {
+    setPrevInitialExamId(initialExamId);
     if (initialExamId) {
       setSelectedExamId(initialExamId);
     }
-  }, [initialExamId]);
+  }
 
   const currentExam: ExamSimulation = useMemo(() => {
     return examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
@@ -82,8 +84,8 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [submissionTime, setSubmissionTime] = useState<string | null>(null);
 
-  // Reset exam on exam switch or restart
-  const resetExam = (examId?: string) => {
+  // Reset exam state callback
+  const resetExam = useCallback((examId?: string) => {
     const targetExam = examSimulations.find((e) => e.id === (examId || selectedExamId)) || examSimulations[0];
     setSecondsLeft(targetExam.durationMinutes * 60);
     setIsRunning(true);
@@ -96,20 +98,30 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setShowConfirmModal(false);
     setSubmissionTime(null);
     setIsCoverExpanded(true);
-  };
-
-  useEffect(() => {
-    resetExam(selectedExamId);
   }, [selectedExamId]);
+
+  // Track selected exam ID changes using render-phase comparison
+  const [prevSelectedExamId, setPrevSelectedExamId] = useState<string>(selectedExamId);
+  if (selectedExamId !== prevSelectedExamId) {
+    setPrevSelectedExamId(selectedExamId);
+    resetExam(selectedExamId);
+  }
+
+  const handleAutoSubmit = useCallback(() => {
+    setIsRunning(false);
+    setIsSubmitted(true);
+    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
+    playFanfareSound();
+  }, []);
 
   // Live Countdown Clock
   useEffect(() => {
-    let timer: any = null;
+    let timer: NodeJS.Timeout | null = null;
     if (isRunning && !isSubmitted && secondsLeft > 0) {
       timer = setInterval(() => {
         setSecondsLeft((prev) => {
           if (prev <= 1) {
-            clearInterval(timer);
+            if (timer) clearInterval(timer);
             handleAutoSubmit();
             return 0;
           }
@@ -117,20 +129,15 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
         });
       }, 1000);
     }
-    return () => clearInterval(timer);
-  }, [isRunning, isSubmitted, secondsLeft]);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isRunning, isSubmitted, secondsLeft, handleAutoSubmit]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleAutoSubmit = () => {
-    setIsRunning(false);
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
-    playFanfareSound();
   };
 
   // Checking task answering status
