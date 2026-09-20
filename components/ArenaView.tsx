@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   allExercises,
   rabiaWorkoutExercises,
@@ -44,22 +44,30 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
     }
   }, [initialExerciseId]);
 
-  // Filter exercises
-  const filteredExercises = allExercises.filter((ex) => {
-    const matchesCat =
-      selectedCategory === 'all' || ex.category === selectedCategory;
-    const matchesSearch =
-      ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.unit.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCat && matchesSearch;
-  });
+  // Memoize exercise filtering to avoid redundant O(N) array filtering, case conversions, and tag searches on every keystroke or re-render
+  const filteredExercises = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return allExercises.filter((ex) => {
+      const matchesCat =
+        selectedCategory === 'all' || ex.category === selectedCategory;
+      const matchesSearch =
+        !q ||
+        ex.title.toLowerCase().includes(q) ||
+        ex.number.toLowerCase().includes(q) ||
+        ex.unit.toLowerCase().includes(q) ||
+        ex.tags.some((t) => t.toLowerCase().includes(q));
+      return matchesCat && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
 
-  const currentExercise: Exercise =
-    allExercises.find((e) => e.id === selectedExerciseId) ||
-    filteredExercises[0] ||
-    allExercises[0];
+  // Memoize active exercise lookup
+  const currentExercise: Exercise = useMemo(() => {
+    return (
+      allExercises.find((e) => e.id === selectedExerciseId) ||
+      filteredExercises[0] ||
+      allExercises[0]
+    );
+  }, [selectedExerciseId, filteredExercises]);
 
   // User input states for current exercise
   const [mcChoice, setMcChoice] = useState<string | null>(null);
