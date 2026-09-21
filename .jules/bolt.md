@@ -1,0 +1,3 @@
+## 2025-05-18 - SSR Hydration with LocalStorage in Next.js
+**Learning:** Initializing `useState` synchronously with `localStorage` in Next.js causes SSR hydration mismatches because server renders initial state while client initial render reads `localStorage`. Using `useEffect` with `React.startTransition` defers state synchronization until after client mount without blocking React transitions or throwing lint errors.
+**Action:** Always load `localStorage` in `useEffect` (or `useSyncExternalStore`) with `startTransition` in Next.js components to prevent hydration errors and avoid set-state-in-effect warnings.
