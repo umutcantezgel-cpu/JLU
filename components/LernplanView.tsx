@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import {
   jluLernplan,
   examTips,
@@ -50,12 +50,14 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount safely
   useEffect(() => {
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        startTransition(() => {
+          setCompletedTopics(JSON.parse(saved));
+        });
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);

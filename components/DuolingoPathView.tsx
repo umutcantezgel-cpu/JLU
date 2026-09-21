@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import { duolingoLevels, Exercise, LearningLevel } from '@/data/curriculumData';
 import { BuchungssatzComposer } from './BuchungssatzComposer';
 import { playSuccessSound, playErrorSound, playFanfareSound } from '@/lib/soundEffects';
@@ -33,7 +33,7 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
 }) => {
   // Gamification state with localStorage persistence
   const [hearts, setHearts] = useState<number>(5);
-  const [streak, setStreak] = useState<number>(5);
+  const [streak] = useState<number>(5);
   const [xp, setXp] = useState<number>(340);
   const [completedLevels, setCompletedLevels] = useState<number[]>([1, 2]);
   const [activeLevel, setActiveLevel] = useState<LearningLevel | null>(null);
@@ -51,13 +51,15 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
       const savedXp = localStorage.getItem('jlu_rabia_xp');
       const savedHearts = localStorage.getItem('jlu_rabia_hearts');
       const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
-      if (savedXp) setXp(parseInt(savedXp, 10));
-      if (savedHearts) setHearts(parseInt(savedHearts, 10));
-      if (savedCompleted) {
-        try {
-          setCompletedLevels(JSON.parse(savedCompleted));
-        } catch (e) {}
-      }
+      startTransition(() => {
+        if (savedXp) setXp(parseInt(savedXp, 10));
+        if (savedHearts) setHearts(parseInt(savedHearts, 10));
+        if (savedCompleted) {
+          try {
+            setCompletedLevels(JSON.parse(savedCompleted));
+          } catch (e) {}
+        }
+      });
     }
   }, []);
 
