@@ -30,7 +30,8 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors"
+            aria-label="Schließen"
+            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
