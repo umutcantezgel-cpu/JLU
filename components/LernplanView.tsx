@@ -42,25 +42,26 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
   onOpenTutor,
   onStartExam,
 }) => {
-  const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>({});
+  // Lazy initialization for localStorage progress avoids cascading re-render on mount
+  const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('rabia_lernplan_completed');
+        if (saved) {
+          return JSON.parse(saved);
+        }
+      } catch (e) {
+        console.warn('Could not read lernplan progress from localStorage', e);
+      }
+    }
+    return {};
+  });
   const [expandedPhases, setExpandedPhases] = useState<Record<number, boolean>>({
     1: true,
     2: false,
     3: false,
     4: false,
   });
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('rabia_lernplan_completed');
-      if (saved) {
-        setCompletedTopics(JSON.parse(saved));
-      }
-    } catch (e) {
-      console.warn('Could not read lernplan progress from localStorage', e);
-    }
-  }, []);
 
   const toggleTopic = (topicId: string) => {
     const updated = {
