@@ -38,12 +38,6 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
 
-  React.useEffect(() => {
-    if (initialExerciseId) {
-      setSelectedExerciseId(initialExerciseId);
-    }
-  }, [initialExerciseId]);
-
   // Filter exercises
   const filteredExercises = allExercises.filter((ex) => {
     const matchesCat =
