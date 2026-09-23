@@ -3,6 +3,11 @@
 
 let isMuted = false;
 
+// PERFORMANCE OPTIMIZATION: Reuse a single AudioContext instance globally.
+// Creating `new AudioCtx()` on every sound trigger causes memory leaks, hits browser AudioContext limits,
+// and introduces audio start latency.
+let globalAudioCtx: AudioContext | null = null;
+
 export const setAudioMuted = (muted: boolean) => {
   isMuted = muted;
   if (typeof window !== 'undefined') {
@@ -19,9 +24,15 @@ export const getAudioMuted = (): boolean => {
 
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!globalAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    globalAudioCtx = new AudioCtx();
+  }
+  if (globalAudioCtx.state === 'suspended') {
+    globalAudioCtx.resume().catch(() => {});
+  }
+  return globalAudioCtx;
 };
 
 export const playSuccessSound = () => {
