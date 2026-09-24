@@ -46,13 +46,16 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   onNavigate,
 }) => {
   const [selectedExamId, setSelectedExamId] = useState<string>(initialExamId || 'klausur-1');
+  const [prevInitialExamId, setPrevInitialExamId] = useState<string | undefined>(initialExamId);
+  const [prevSelectedExamId, setPrevSelectedExamId] = useState<string>(selectedExamId);
 
   // If initialExamId changes from outside (e.g. from Lernplan)
-  useEffect(() => {
+  if (initialExamId !== prevInitialExamId) {
+    setPrevInitialExamId(initialExamId);
     if (initialExamId) {
       setSelectedExamId(initialExamId);
     }
-  }, [initialExamId]);
+  }
 
   const currentExam: ExamSimulation = useMemo(() => {
     return examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
@@ -98,9 +101,24 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setIsCoverExpanded(true);
   };
 
-  useEffect(() => {
+  // Reset exam state when selectedExamId changes during render
+  if (selectedExamId !== prevSelectedExamId) {
+    setPrevSelectedExamId(selectedExamId);
     resetExam(selectedExamId);
-  }, [selectedExamId]);
+  }
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleAutoSubmit = React.useCallback(() => {
+    setIsRunning(false);
+    setIsSubmitted(true);
+    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
+    playFanfareSound();
+  }, []);
 
   // Live Countdown Clock
   useEffect(() => {
@@ -118,20 +136,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isRunning, isSubmitted, secondsLeft]);
-
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleAutoSubmit = () => {
-    setIsRunning(false);
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
-    playFanfareSound();
-  };
+  }, [isRunning, isSubmitted, secondsLeft, handleAutoSubmit]);
 
   // Checking task answering status
   const isTaskAnswered = (task: Exercise): boolean => {
