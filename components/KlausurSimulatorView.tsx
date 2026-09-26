@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { examSimulations } from '@/data/examSimulationsData';
 import { ExamSimulation, Exercise } from '@/data/curriculumTypes';
 import { playSuccessSound, playErrorSound, playFanfareSound } from '@/lib/soundEffects';
@@ -45,14 +45,16 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   onOpenTutor,
   onNavigate,
 }) => {
+  // Sync state during render when initialExamId prop changes
+  const [prevInitialExamId, setPrevInitialExamId] = useState<string | undefined>(initialExamId);
   const [selectedExamId, setSelectedExamId] = useState<string>(initialExamId || 'klausur-1');
 
-  // If initialExamId changes from outside (e.g. from Lernplan)
-  useEffect(() => {
+  if (initialExamId !== prevInitialExamId) {
+    setPrevInitialExamId(initialExamId);
     if (initialExamId) {
       setSelectedExamId(initialExamId);
     }
-  }, [initialExamId]);
+  }
 
   const currentExam: ExamSimulation = useMemo(() => {
     return examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
@@ -64,12 +66,11 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   const [isCoverExpanded, setIsCoverExpanded] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<'single' | 'sheet'>('single');
 
-  // Timer state
+  // Timer & response states
   const [secondsLeft, setSecondsLeft] = useState<number>(currentExam.durationMinutes * 60);
   const [isRunning, setIsRunning] = useState<boolean>(true);
   const [activeTaskIndex, setActiveTaskIndex] = useState<number>(0);
 
-  // Student Responses (Stored privately without revealing right/wrong before submission!)
   const [selectedMCOptions, setSelectedMCOptions] = useState<Record<string, string>>({});
   const [calculationInputs, setCalculationInputs] = useState<Record<string, Record<string, string>>>({});
   const [buchungssatzInputs, setBuchungssatzInputs] = useState<
@@ -77,14 +78,32 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   >({});
   const [flaggedTasks, setFlaggedTasks] = useState<Record<string, boolean>>({});
 
-  // Submission & Grading state
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [submissionTime, setSubmissionTime] = useState<string | null>(null);
 
-  // Reset exam on exam switch or restart
+  // Sync state during render when selectedExamId changes
+  const [prevSelectedExamId, setPrevSelectedExamId] = useState<string>(selectedExamId);
+  if (selectedExamId !== prevSelectedExamId) {
+    setPrevSelectedExamId(selectedExamId);
+    const targetExam = examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
+    setSecondsLeft(targetExam.durationMinutes * 60);
+    setIsRunning(true);
+    setActiveTaskIndex(0);
+    setSelectedMCOptions({});
+    setCalculationInputs({});
+    setBuchungssatzInputs({});
+    setFlaggedTasks({});
+    setIsSubmitted(false);
+    setShowConfirmModal(false);
+    setSubmissionTime(null);
+    setIsCoverExpanded(true);
+  }
+
   const resetExam = (examId?: string) => {
-    const targetExam = examSimulations.find((e) => e.id === (examId || selectedExamId)) || examSimulations[0];
+    const targetId = examId || selectedExamId;
+    setSelectedExamId(targetId);
+    const targetExam = examSimulations.find((e) => e.id === targetId) || examSimulations[0];
     setSecondsLeft(targetExam.durationMinutes * 60);
     setIsRunning(true);
     setActiveTaskIndex(0);
@@ -98,18 +117,20 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setIsCoverExpanded(true);
   };
 
-  useEffect(() => {
-    resetExam(selectedExamId);
-  }, [selectedExamId]);
+  const handleAutoSubmit = useCallback(() => {
+    setIsRunning(false);
+    setIsSubmitted(true);
+    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
+    playFanfareSound();
+  }, []);
 
   // Live Countdown Clock
   useEffect(() => {
-    let timer: any = null;
+    let timer: NodeJS.Timeout | null = null;
     if (isRunning && !isSubmitted && secondsLeft > 0) {
       timer = setInterval(() => {
         setSecondsLeft((prev) => {
           if (prev <= 1) {
-            clearInterval(timer);
             handleAutoSubmit();
             return 0;
           }
@@ -117,20 +138,15 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
         });
       }, 1000);
     }
-    return () => clearInterval(timer);
-  }, [isRunning, isSubmitted, secondsLeft]);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isRunning, isSubmitted, secondsLeft, handleAutoSubmit]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleAutoSubmit = () => {
-    setIsRunning(false);
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
-    playFanfareSound();
   };
 
   // Checking task answering status
@@ -914,9 +930,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   <p>{task.question}</p>
                 </div>
 
-                {/* ------------------------------------------------------------- */}
-                {/* INTERACTIVE INPUT FIELD: MULTIPLE CHOICE                      */}
-                {/* ------------------------------------------------------------- */}
+                {/* INTERACTIVE INPUT FIELD: MULTIPLE CHOICE */}
                 {task.type === 'multiple_choice' && task.mcOptions && (
                   <div className="space-y-3 pt-1">
                     {task.mcOptions.map((opt) => {
@@ -994,9 +1008,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* INTERACTIVE INPUT FIELD: CALCULATION                          */}
-                {/* ------------------------------------------------------------- */}
+                {/* INTERACTIVE INPUT FIELD: CALCULATION */}
                 {task.type === 'calculation' && task.calculationFields && (
                   <div className="space-y-4 pt-1">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1055,9 +1067,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* INTERACTIVE INPUT FIELD: BUCHUNGSSATZ                         */}
-                {/* ------------------------------------------------------------- */}
+                {/* INTERACTIVE INPUT FIELD: BUCHUNGSSATZ */}
                 {task.type === 'buchungssatz' && (
                   <div className="space-y-4 pt-1">
                     <div className="p-5 rounded-2xl bg-[#fafafc] border border-black/[0.05] space-y-3.5">
@@ -1150,9 +1160,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* POST-SUBMISSION DETAILED EXPLANATION ("WARUM WIE WAS IST")     */}
-                {/* ------------------------------------------------------------- */}
+                {/* POST-SUBMISSION DETAILED EXPLANATION ("WARUM WIE WAS IST") */}
                 {isSubmitted && evalItem && (
                   <div className="p-6 rounded-3xl bg-[#edf5fe]/70 border border-[#0071e3]/20 space-y-4 animate-in fade-in-50 duration-200">
                     <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#0071e3]/15 pb-3">

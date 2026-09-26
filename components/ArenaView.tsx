@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   allExercises,
   rabiaWorkoutExercises,
   buchfuehrungExercises,
   kostenrechnungExercises,
   Exercise,
+  getExerciseById,
 } from '@/data/curriculumData';
 import { BuchungssatzComposer } from './BuchungssatzComposer';
 import { playSuccessSound, playErrorSound } from '@/lib/soundEffects';
@@ -36,30 +37,44 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
     'all' | 'rabia_special' | 'buchfuehrung' | 'kostenrechnung'
   >('rabia_special');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
 
-  React.useEffect(() => {
+  // State synchronization pattern: adjust state during render when prop changes
+  const [prevInitialId, setPrevInitialId] = useState<string | undefined>(initialExerciseId);
+  const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5');
+
+  if (initialExerciseId !== prevInitialId) {
+    setPrevInitialId(initialExerciseId);
     if (initialExerciseId) {
       setSelectedExerciseId(initialExerciseId);
     }
-  }, [initialExerciseId]);
+  }
 
-  // Filter exercises
-  const filteredExercises = allExercises.filter((ex) => {
-    const matchesCat =
-      selectedCategory === 'all' || ex.category === selectedCategory;
-    const matchesSearch =
-      ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.unit.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCat && matchesSearch;
-  });
+  // PERFORMANCE OPTIMIZATION: Memoize filtered exercises to prevent re-filtering & lowercasing on every render/keystroke
+  const filteredExercises = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return allExercises.filter((ex) => {
+      const matchesCat =
+        selectedCategory === 'all' || ex.category === selectedCategory;
+      if (!matchesCat) return false;
+      if (!query) return true;
 
-  const currentExercise: Exercise =
-    allExercises.find((e) => e.id === selectedExerciseId) ||
-    filteredExercises[0] ||
-    allExercises[0];
+      return (
+        ex.title.toLowerCase().includes(query) ||
+        ex.number.toLowerCase().includes(query) ||
+        ex.unit.toLowerCase().includes(query) ||
+        ex.tags.some((t) => t.toLowerCase().includes(query))
+      );
+    });
+  }, [selectedCategory, searchQuery]);
+
+  // PERFORMANCE OPTIMIZATION: Use O(1) getExerciseById lookup or cached result
+  const currentExercise: Exercise = useMemo(() => {
+    return (
+      getExerciseById(selectedExerciseId) ||
+      filteredExercises[0] ||
+      allExercises[0]
+    );
+  }, [selectedExerciseId, filteredExercises]);
 
   // User input states for current exercise
   const [mcChoice, setMcChoice] = useState<string | null>(null);
