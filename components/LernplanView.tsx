@@ -43,6 +43,7 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
   onStartExam,
 }) => {
   const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>({});
+
   const [expandedPhases, setExpandedPhases] = useState<Record<number, boolean>>({
     1: true,
     2: false,
@@ -50,16 +51,19 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
+  // Load from localStorage post-hydration via microtask to prevent SSR hydration mismatch and set-state-in-effect warning
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('rabia_lernplan_completed');
-      if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+    queueMicrotask(() => {
+      if (typeof window === 'undefined') return;
+      try {
+        const saved = localStorage.getItem('rabia_lernplan_completed');
+        if (saved) {
+          setCompletedTopics(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.warn('Could not read lernplan progress from localStorage', e);
       }
-    } catch (e) {
-      console.warn('Could not read lernplan progress from localStorage', e);
-    }
+    });
   }, []);
 
   const toggleTopic = (topicId: string) => {
