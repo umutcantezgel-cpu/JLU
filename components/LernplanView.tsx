@@ -50,7 +50,6 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
