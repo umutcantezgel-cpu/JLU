@@ -33,10 +33,23 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
 }) => {
   // Gamification state with localStorage persistence
   const [hearts, setHearts] = useState<number>(5);
-  const [streak, setStreak] = useState<number>(5);
+  const [streak] = useState<number>(5);
   const [xp, setXp] = useState<number>(340);
   const [completedLevels, setCompletedLevels] = useState<number[]>([1, 2]);
   const [activeLevel, setActiveLevel] = useState<LearningLevel | null>(null);
+
+  useEffect(() => {
+    const savedXp = localStorage.getItem('jlu_rabia_xp');
+    const savedHearts = localStorage.getItem('jlu_rabia_hearts');
+    const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
+    if (savedXp) setXp(parseInt(savedXp, 10));
+    if (savedHearts) setHearts(parseInt(savedHearts, 10));
+    if (savedCompleted) {
+      try {
+        setCompletedLevels(JSON.parse(savedCompleted));
+      } catch (e) {}
+    }
+  }, []);
 
   // Active level exercise state
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState<number>(0);
@@ -45,21 +58,6 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
   const [isExerciseSubmitted, setIsExerciseSubmitted] = useState<boolean>(false);
   const [isExerciseCorrect, setIsExerciseCorrect] = useState<boolean>(false);
   const [showLevelCompleteModal, setShowLevelCompleteModal] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedXp = localStorage.getItem('jlu_rabia_xp');
-      const savedHearts = localStorage.getItem('jlu_rabia_hearts');
-      const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
-      if (savedXp) setXp(parseInt(savedXp, 10));
-      if (savedHearts) setHearts(parseInt(savedHearts, 10));
-      if (savedCompleted) {
-        try {
-          setCompletedLevels(JSON.parse(savedCompleted));
-        } catch (e) {}
-      }
-    }
-  }, []);
 
   const saveProgress = (newXp: number, newHearts: number, newCompleted: number[]) => {
     setXp(newXp);

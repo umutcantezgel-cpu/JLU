@@ -1,0 +1,3 @@
+## 2025-05-10 - O(1) Exercise Lookups & Render-Phase State Sync
+**Learning:** Initializing React state directly from `localStorage` in Next.js `useState` initializers causes SSR hydration mismatch errors because the server renders fallback defaults while the client hydrator reads `localStorage`. Always read `localStorage` post-hydration inside `useEffect` in Next.js client components. For prop-to-state synchronization (e.g. `initialExerciseId` -> `selectedExerciseId`), use render-phase state updates instead of `setState` in `useEffect` to eliminate cascading re-renders.
+**Action:** Use `Map<string, T>` for static dataset lookups, deferred `localStorage` reads in `useEffect` for Next.js SSR compatibility, and render-phase state adjustments for prop sync.
