@@ -36,13 +36,17 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
     'all' | 'rabia_special' | 'buchfuehrung' | 'kostenrechnung'
   >('rabia_special');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Performance optimization: Sync props to state during render instead of in useEffect to avoid cascading re-renders
+  const [prevInitialExerciseId, setPrevInitialExerciseId] = useState<string | undefined>(initialExerciseId);
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
 
-  React.useEffect(() => {
+  if (initialExerciseId !== prevInitialExerciseId) {
+    setPrevInitialExerciseId(initialExerciseId);
     if (initialExerciseId) {
       setSelectedExerciseId(initialExerciseId);
     }
-  }, [initialExerciseId]);
+  }
 
   // Filter exercises
   const filteredExercises = allExercises.filter((ex) => {
