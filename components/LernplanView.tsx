@@ -50,12 +50,15 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount using startTransition to prevent SSR hydration mismatch and cascading re-renders
   useEffect(() => {
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        React.startTransition(() => {
+          setCompletedTopics(parsed);
+        });
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);

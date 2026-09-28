@@ -46,18 +46,21 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
   const [isExerciseCorrect, setIsExerciseCorrect] = useState<boolean>(false);
   const [showLevelCompleteModal, setShowLevelCompleteModal] = useState<boolean>(false);
 
+  // Load from localStorage in useEffect using startTransition to prevent SSR hydration mismatch and cascading re-renders
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedXp = localStorage.getItem('jlu_rabia_xp');
-      const savedHearts = localStorage.getItem('jlu_rabia_hearts');
-      const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
-      if (savedXp) setXp(parseInt(savedXp, 10));
-      if (savedHearts) setHearts(parseInt(savedHearts, 10));
-      if (savedCompleted) {
-        try {
-          setCompletedLevels(JSON.parse(savedCompleted));
-        } catch (e) {}
-      }
+    const savedXp = localStorage.getItem('jlu_rabia_xp');
+    const savedHearts = localStorage.getItem('jlu_rabia_hearts');
+    const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
+    if (savedXp || savedHearts || savedCompleted) {
+      React.startTransition(() => {
+        if (savedXp) setXp(parseInt(savedXp, 10));
+        if (savedHearts) setHearts(parseInt(savedHearts, 10));
+        if (savedCompleted) {
+          try {
+            setCompletedLevels(JSON.parse(savedCompleted));
+          } catch (e) {}
+        }
+      });
     }
   }, []);
 

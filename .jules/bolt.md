@@ -1,0 +1,3 @@
+## 2025-05-18 - Prevent Cascading Re-renders and SSR Hydration Mismatches
+**Learning:** Initializing state synchronously from browser-only storage (like `localStorage`) in `useState` initializers causes SSR hydration mismatches in Next.js/React 19. Furthermore, calling synchronous `setState` directly inside `useEffect` triggers React Compiler errors for cascading re-renders.
+**Action:** Wrap state updates inside client-side `useEffect` with `React.startTransition()` to load browser storage safely without SSR mismatches or synchronous cascading re-renders. For prop-driven state synchronization, derive state during render rather than firing state updates in `useEffect`.
