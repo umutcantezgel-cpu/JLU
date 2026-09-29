@@ -3,6 +3,11 @@
 
 let isMuted = false;
 
+// Optimization: Reuse a single AudioContext instance across playback triggers
+// rather than instantiating a new AudioContext on every sound call.
+// This eliminates audio thread initialization overhead, memory leaks, and latency.
+let cachedAudioCtx: AudioContext | null = null;
+
 export const setAudioMuted = (muted: boolean) => {
   isMuted = muted;
   if (typeof window !== 'undefined') {
@@ -19,9 +24,19 @@ export const getAudioMuted = (): boolean => {
 
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!cachedAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedAudioCtx = new AudioCtx();
+  }
+
+  // Resume suspended AudioContext if needed (browser autoplay policy)
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {

@@ -1,0 +1,3 @@
+## 2025-02-14 - Web Audio AudioContext Reuse & Next.js SSR State Initialization
+**Learning:** Instantiating `new AudioContext()` on every sound trigger causes audio thread initialization overhead, memory leaks, and playback latency. Caching a singleton `AudioContext` instance eliminates redundant allocations. Also, reading `localStorage` synchronously during initial `useState` in Next.js causes SSR hydration mismatches because server pre-rendering has `window === undefined`, whereas `useEffect` delays reading `localStorage` until after hydration.
+**Action:** Always reuse a singleton `AudioContext` (resuming if suspended) for Web Audio playback. Keep `localStorage` reads inside `useEffect` or behind SSR checks to prevent hydration mismatches in Next.js.

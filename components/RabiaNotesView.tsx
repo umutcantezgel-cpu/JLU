@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Exercise } from '@/data/curriculumTypes';
 import { getExerciseById } from '@/data/curriculumData';
 import { Sparkles, ArrowRight, BookOpen, Target, CheckCircle2, FileText, Lightbulb, Compass } from 'lucide-react';
@@ -251,9 +251,12 @@ export const RabiaNotesView: React.FC<RabiaNotesViewProps> = ({
   const [selectedFolge, setSelectedFolge] = useState<number | 'all'>('all');
   const [activeCheatTab, setActiveCheatTab] = useState<'matrix' | 'steuern' | 'guv' | 'bilanz'>('matrix');
 
-  const filteredNotes = selectedFolge === 'all'
-    ? RABIA_NOTES
-    : RABIA_NOTES.filter((n) => n.folge === selectedFolge);
+  // Optimization: Memoize filtered notes calculation to prevent array re-filtering on unrelated re-renders
+  const filteredNotes = useMemo(() => {
+    return selectedFolge === 'all'
+      ? RABIA_NOTES
+      : RABIA_NOTES.filter((n) => n.folge === selectedFolge);
+  }, [selectedFolge]);
 
   return (
     <div className="flex flex-col w-full gap-10 pb-32">
