@@ -1,0 +1,3 @@
+## 2026-09-29 - Modal Dialog & Drawer Accessibility Patterns
+**Learning:** Modal and drawer overlays require keyboard Escape key handlers, proper ARIA dialog attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`), presentational backdrop roles (`role="presentation"`), and explicit `aria-label` attributes on icon-only close/action buttons to be fully accessible to keyboard and screen-reader users.
+**Action:** When building or enhancing modals or slide-over drawers, attach `Escape` key event listeners, use `role="presentation"` on backdrop overlays, and ensure all icon-only buttons include descriptive `aria-label` attributes.
