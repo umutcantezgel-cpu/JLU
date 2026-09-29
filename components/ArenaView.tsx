@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   allExercises,
   rabiaWorkoutExercises,
@@ -40,21 +40,27 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
 
   React.useEffect(() => {
     if (initialExerciseId) {
-      setSelectedExerciseId(initialExerciseId);
+      queueMicrotask(() => {
+        setSelectedExerciseId(initialExerciseId);
+      });
     }
   }, [initialExerciseId]);
 
-  // Filter exercises
-  const filteredExercises = allExercises.filter((ex) => {
-    const matchesCat =
-      selectedCategory === 'all' || ex.category === selectedCategory;
-    const matchesSearch =
-      ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.unit.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCat && matchesSearch;
-  });
+  // Optimization: Memoize filtered exercises calculation to prevent redundant search/filter operations on every re-render
+  const filteredExercises = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    return allExercises.filter((ex) => {
+      const matchesCat =
+        selectedCategory === 'all' || ex.category === selectedCategory;
+      const matchesSearch =
+        !q ||
+        ex.title.toLowerCase().includes(q) ||
+        ex.number.toLowerCase().includes(q) ||
+        ex.unit.toLowerCase().includes(q) ||
+        ex.tags.some((t) => t.toLowerCase().includes(q));
+      return matchesCat && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
 
   const currentExercise: Exercise =
     allExercises.find((e) => e.id === selectedExerciseId) ||

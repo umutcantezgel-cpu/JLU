@@ -50,12 +50,15 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount safely without synchronous setState in effect body
   useEffect(() => {
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        queueMicrotask(() => {
+          setCompletedTopics(parsed);
+        });
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);
