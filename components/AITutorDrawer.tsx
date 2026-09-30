@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Brain,
@@ -33,6 +33,19 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
   const [query, setQuery] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +98,9 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
 
       {/* Slide-over Drawer */}
       <aside
-        aria-label="JLU Accounting Copilot"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tutor-drawer-title"
         className="fixed top-20 right-0 bottom-0 w-full sm:w-[460px] bg-surface shadow-[-4px_0_24px_-4px_rgba(15,23,42,0.16)] z-50 flex flex-col justify-between overflow-hidden border-l border-border-hairline"
       >
         {/* 1. Drawer Header */}
@@ -96,7 +111,7 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
                 <Brain className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-bold text-base text-secondary leading-tight">
+                <h2 id="tutor-drawer-title" className="font-bold text-base text-secondary leading-tight">
                   JLU Accounting Copilot
                 </h2>
                 <p className="text-xs text-text-muted">Schritt-für-Schritt Erklärung</p>
