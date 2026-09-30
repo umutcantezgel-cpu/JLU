@@ -45,14 +45,16 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   onOpenTutor,
   onNavigate,
 }) => {
+  // Performance optimization: Render-time state derivation for initialExamId prop changes
+  const [prevInitialExamId, setPrevInitialExamId] = useState<string | undefined>(initialExamId);
   const [selectedExamId, setSelectedExamId] = useState<string>(initialExamId || 'klausur-1');
 
-  // If initialExamId changes from outside (e.g. from Lernplan)
-  useEffect(() => {
+  if (initialExamId !== prevInitialExamId) {
+    setPrevInitialExamId(initialExamId);
     if (initialExamId) {
       setSelectedExamId(initialExamId);
     }
-  }, [initialExamId]);
+  }
 
   const currentExam: ExamSimulation = useMemo(() => {
     return examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
@@ -82,7 +84,25 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [submissionTime, setSubmissionTime] = useState<string | null>(null);
 
-  // Reset exam on exam switch or restart
+  // Derived state check to reset exam when selectedExamId changes without cascading renders
+  const [prevSelectedExamId, setPrevSelectedExamId] = useState<string>(selectedExamId);
+  if (selectedExamId !== prevSelectedExamId) {
+    setPrevSelectedExamId(selectedExamId);
+    const targetExam = examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
+    setSecondsLeft(targetExam.durationMinutes * 60);
+    setIsRunning(true);
+    setActiveTaskIndex(0);
+    setSelectedMCOptions({});
+    setCalculationInputs({});
+    setBuchungssatzInputs({});
+    setFlaggedTasks({});
+    setIsSubmitted(false);
+    setShowConfirmModal(false);
+    setSubmissionTime(null);
+    setIsCoverExpanded(true);
+  }
+
+  // Reset exam handler for explicit restarts
   const resetExam = (examId?: string) => {
     const targetExam = examSimulations.find((e) => e.id === (examId || selectedExamId)) || examSimulations[0];
     setSecondsLeft(targetExam.durationMinutes * 60);
@@ -98,39 +118,33 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setIsCoverExpanded(true);
   };
 
-  useEffect(() => {
-    resetExam(selectedExamId);
-  }, [selectedExamId]);
-
-  // Live Countdown Clock
-  useEffect(() => {
-    let timer: any = null;
-    if (isRunning && !isSubmitted && secondsLeft > 0) {
-      timer = setInterval(() => {
-        setSecondsLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            handleAutoSubmit();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isRunning, isSubmitted, secondsLeft]);
-
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
   const handleAutoSubmit = () => {
     setIsRunning(false);
     setIsSubmitted(true);
     setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
     playFanfareSound();
+  };
+
+  // Live Countdown Clock: interval is set once per running state, not torn down on every second tick
+  useEffect(() => {
+    if (!isRunning || isSubmitted) return;
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleAutoSubmit();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isRunning, isSubmitted]);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
   // Checking task answering status

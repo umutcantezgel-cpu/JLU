@@ -1,0 +1,3 @@
+## 2025-05-18 - Avoid localStorage initializers in Next.js SSR & Stabilize setInterval effects
+**Learning:** In Next.js SSR apps, synchronously initializing `useState` from `localStorage` causes SSR hydration mismatches because `window` is undefined on the server but defined on the client. For timer countdowns, keeping `secondsLeft` in the `useEffect` dependency array causes `setInterval` teardown and re-creation on every tick; using state updater callbacks `setSecondsLeft(prev => ...)` allows a single persistent interval across seconds.
+**Action:** Use `useEffect` or state updater callbacks to avoid unnecessary interval re-creation and avoid SSR hydration mismatches when reading browser APIs.
