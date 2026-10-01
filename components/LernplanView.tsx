@@ -55,7 +55,10 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        React.startTransition(() => {
+          setCompletedTopics(parsed);
+        });
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);

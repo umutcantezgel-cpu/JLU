@@ -17,17 +17,21 @@ export const allExercises: Exercise[] = [
   ...kostenrechnungExercises,
 ];
 
-export const getExerciseById = (id: string): Exercise | undefined => {
-  // Check main exercises
-  const found = allExercises.find((ex) => ex.id === id);
-  if (found) return found;
-
-  // Check exam exercises
-  for (const exam of examSimulations) {
-    const examTask = exam.exercises.find((ex) => ex.id === id);
-    if (examTask) return examTask;
+// Optimization: Pre-compute a Map for O(1) exercise lookups across the app instead of O(N) array scans
+const exerciseMap = new Map<string, Exercise>();
+for (const ex of allExercises) {
+  exerciseMap.set(ex.id, ex);
+}
+for (const exam of examSimulations) {
+  for (const ex of exam.exercises) {
+    if (!exerciseMap.has(ex.id)) {
+      exerciseMap.set(ex.id, ex);
+    }
   }
-  return undefined;
+}
+
+export const getExerciseById = (id: string): Exercise | undefined => {
+  return exerciseMap.get(id);
 };
 
 // 9-Stage Duolingo Learning Journey
