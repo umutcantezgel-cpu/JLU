@@ -189,12 +189,13 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
               <div key={`soll-${index}`} className="flex items-center gap-2">
                 <select
                   value={entry.account}
+                  aria-label={`Soll-Konto ${index + 1}`}
                   onChange={(e) => {
                     const next = [...sollEntries];
                     next[index].account = e.target.value;
                     setSollEntries(next);
                   }}
-                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium"
+                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 >
                   {COMMON_ACCOUNTS.map((acc) => (
                     <option key={acc} value={acc}>
@@ -206,6 +207,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <input
                     type="number"
                     step="any"
+                    aria-label={`Soll-Betrag in Euro ${index + 1}`}
                     value={entry.amount === 0 ? '' : entry.amount}
                     onChange={(e) => {
                       const next = [...sollEntries];
@@ -213,7 +215,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                       setSollEntries(next);
                     }}
                     placeholder="0.00"
-                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary"
+                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                   />
                   <span className="text-xs text-text-muted">€</span>
                 </div>
@@ -221,7 +223,8 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeSoll(index)}
-                    className="text-text-muted hover:text-red-500 p-1"
+                    aria-label={`Soll-Konto ${index + 1} entfernen`}
+                    className="text-text-muted hover:text-red-500 rounded p-1 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -256,12 +259,13 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
               <div key={`haben-${index}`} className="flex items-center gap-2">
                 <select
                   value={entry.account}
+                  aria-label={`Haben-Konto ${index + 1}`}
                   onChange={(e) => {
                     const next = [...habenEntries];
                     next[index].account = e.target.value;
                     setHabenEntries(next);
                   }}
-                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium"
+                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 >
                   {COMMON_ACCOUNTS.map((acc) => (
                     <option key={acc} value={acc}>
@@ -273,6 +277,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <input
                     type="number"
                     step="any"
+                    aria-label={`Haben-Betrag in Euro ${index + 1}`}
                     value={entry.amount === 0 ? '' : entry.amount}
                     onChange={(e) => {
                       const next = [...habenEntries];
@@ -280,7 +285,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                       setHabenEntries(next);
                     }}
                     placeholder="0.00"
-                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary"
+                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                   />
                   <span className="text-xs text-text-muted">€</span>
                 </div>
@@ -288,7 +293,8 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeHaben(index)}
-                    className="text-text-muted hover:text-red-500 p-1"
+                    aria-label={`Haben-Konto ${index + 1} entfernen`}
+                    className="text-text-muted hover:text-red-500 rounded p-1 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
