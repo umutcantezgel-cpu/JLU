@@ -4,26 +4,17 @@ import React, { useState, useEffect } from 'react';
 import {
   jluLernplan,
   examTips,
-  LernplanPhase,
-  LernplanUnit,
 } from '@/data/lernplanData';
 import {
   Calendar,
-  CheckCircle2,
-  Circle,
   Clock,
   Award,
-  Sparkles,
-  BookOpen,
   ArrowRight,
   GraduationCap,
   FileText,
-  AlertTriangle,
-  Calculator,
   ChevronDown,
   ChevronUp,
   Target,
-  Flame,
   Printer,
   Compass,
   Smile,
@@ -39,7 +30,6 @@ interface LernplanViewProps {
 
 export const LernplanView: React.FC<LernplanViewProps> = ({
   onNavigate,
-  onOpenTutor,
   onStartExam,
 }) => {
   const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>({});
@@ -50,12 +40,14 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        queueMicrotask(() => {
+          setCompletedTopics(JSON.parse(saved));
+        });
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);
