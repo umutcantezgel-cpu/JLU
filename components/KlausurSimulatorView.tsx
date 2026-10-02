@@ -1,31 +1,26 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { examSimulations } from '@/data/examSimulationsData';
 import { ExamSimulation, Exercise } from '@/data/curriculumTypes';
-import { playSuccessSound, playErrorSound, playFanfareSound } from '@/lib/soundEffects';
+import { playErrorSound, playFanfareSound } from '@/lib/soundEffects';
 import {
   Timer,
   Play,
   Pause,
   Award,
-  AlertCircle,
-  Calculator,
   CheckCircle2,
   XCircle,
   FileCheck,
   RotateCcw,
   Sparkles,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   BookOpen,
   Printer,
   Flag,
   Check,
-  HelpCircle,
   FileText,
-  User,
   GraduationCap,
   Eye,
   List,
@@ -46,13 +41,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   onNavigate,
 }) => {
   const [selectedExamId, setSelectedExamId] = useState<string>(initialExamId || 'klausur-1');
-
-  // If initialExamId changes from outside (e.g. from Lernplan)
-  useEffect(() => {
-    if (initialExamId) {
-      setSelectedExamId(initialExamId);
-    }
-  }, [initialExamId]);
+  const [prevInitialExamId, setPrevInitialExamId] = useState<string | undefined>(initialExamId);
 
   const currentExam: ExamSimulation = useMemo(() => {
     return examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
@@ -65,7 +54,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   const [viewMode, setViewMode] = useState<'single' | 'sheet'>('single');
 
   // Timer state
-  const [secondsLeft, setSecondsLeft] = useState<number>(currentExam.durationMinutes * 60);
+  const [secondsLeft, setSecondsLeft] = useState<number>(() => currentExam.durationMinutes * 60);
   const [isRunning, setIsRunning] = useState<boolean>(true);
   const [activeTaskIndex, setActiveTaskIndex] = useState<number>(0);
 
@@ -82,9 +71,8 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [submissionTime, setSubmissionTime] = useState<string | null>(null);
 
-  // Reset exam on exam switch or restart
-  const resetExam = (examId?: string) => {
-    const targetExam = examSimulations.find((e) => e.id === (examId || selectedExamId)) || examSimulations[0];
+  // Reset exam state helper
+  const resetExamState = useCallback((targetExam: ExamSimulation) => {
     setSecondsLeft(targetExam.durationMinutes * 60);
     setIsRunning(true);
     setActiveTaskIndex(0);
@@ -96,20 +84,39 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setShowConfirmModal(false);
     setSubmissionTime(null);
     setIsCoverExpanded(true);
+  }, []);
+
+  // Sync state if initialExamId prop changes from parent without cascading re-renders in useEffect
+  if (initialExamId !== prevInitialExamId) {
+    setPrevInitialExamId(initialExamId);
+    if (initialExamId && initialExamId !== selectedExamId) {
+      setSelectedExamId(initialExamId);
+      const target = examSimulations.find((e) => e.id === initialExamId) || examSimulations[0];
+      resetExamState(target);
+    }
+  }
+
+  const handleSelectExam = (examId: string) => {
+    setSelectedExamId(examId);
+    const target = examSimulations.find((e) => e.id === examId) || examSimulations[0];
+    resetExamState(target);
   };
 
-  useEffect(() => {
-    resetExam(selectedExamId);
-  }, [selectedExamId]);
+  const handleAutoSubmit = useCallback(() => {
+    setIsRunning(false);
+    setIsSubmitted(true);
+    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
+    playFanfareSound();
+  }, []);
 
   // Live Countdown Clock
   useEffect(() => {
-    let timer: any = null;
+    let timer: NodeJS.Timeout | null = null;
     if (isRunning && !isSubmitted && secondsLeft > 0) {
       timer = setInterval(() => {
         setSecondsLeft((prev) => {
           if (prev <= 1) {
-            clearInterval(timer);
+            if (timer) clearInterval(timer);
             handleAutoSubmit();
             return 0;
           }
@@ -117,20 +124,15 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
         });
       }, 1000);
     }
-    return () => clearInterval(timer);
-  }, [isRunning, isSubmitted, secondsLeft]);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isRunning, isSubmitted, secondsLeft, handleAutoSubmit]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleAutoSubmit = () => {
-    setIsRunning(false);
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
-    playFanfareSound();
   };
 
   // Checking task answering status
@@ -373,10 +375,10 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
               onClick={() => {
                 if (!isSubmitted && answeredCount > 0) {
                   if (confirm('Achtung: Beim Wechseln der Klausur gehen ungespeicherte Eingaben verloren. Fortfahren?')) {
-                    setSelectedExamId(exam.id);
+                    handleSelectExam(exam.id);
                   }
                 } else {
-                  setSelectedExamId(exam.id);
+                  handleSelectExam(exam.id);
                 }
               }}
               className={`px-4 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5 active:scale-[0.98] ${
@@ -507,7 +509,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
           ) : (
             <button
               type="button"
-              onClick={() => resetExam()}
+              onClick={() => resetExamState(currentExam)}
               className="px-4 py-2 rounded-full bg-black/[0.05] hover:bg-black/[0.08] active:scale-[0.98] text-slate-800 font-medium text-xs transition-colors flex items-center gap-1.5"
             >
               <RotateCcw className="w-3.5 h-3.5" />
