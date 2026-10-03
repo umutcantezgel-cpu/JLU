@@ -221,6 +221,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeSoll(index)}
+                    aria-label="Soll-Eintrag entfernen"
                     className="text-text-muted hover:text-red-500 p-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -288,6 +289,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeHaben(index)}
+                    aria-label="Haben-Eintrag entfernen"
                     className="text-text-muted hover:text-red-500 p-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
