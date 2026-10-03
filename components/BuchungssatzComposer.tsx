@@ -194,6 +194,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                     next[index].account = e.target.value;
                     setSollEntries(next);
                   }}
+                  aria-label={`Soll-Konto ${index + 1}`}
                   className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium"
                 >
                   {COMMON_ACCOUNTS.map((acc) => (
@@ -213,6 +214,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                       setSollEntries(next);
                     }}
                     placeholder="0.00"
+                    aria-label={`Soll-Betrag in Euro für Konto ${index + 1}`}
                     className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary"
                   />
                   <span className="text-xs text-text-muted">€</span>
@@ -221,6 +223,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeSoll(index)}
+                    aria-label={`Soll-Konto ${index + 1} entfernen`}
                     className="text-text-muted hover:text-red-500 p-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -261,6 +264,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                     next[index].account = e.target.value;
                     setHabenEntries(next);
                   }}
+                  aria-label={`Haben-Konto ${index + 1}`}
                   className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium"
                 >
                   {COMMON_ACCOUNTS.map((acc) => (
@@ -280,6 +284,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                       setHabenEntries(next);
                     }}
                     placeholder="0.00"
+                    aria-label={`Haben-Betrag in Euro für Konto ${index + 1}`}
                     className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary"
                   />
                   <span className="text-xs text-text-muted">€</span>
@@ -288,6 +293,7 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeHaben(index)}
+                    aria-label={`Haben-Konto ${index + 1} entfernen`}
                     className="text-text-muted hover:text-red-500 p-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
