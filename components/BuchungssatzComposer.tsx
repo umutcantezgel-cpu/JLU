@@ -39,7 +39,7 @@ const COMMON_ACCOUNTS = [
   'Schlussbilanzkonto (SBK)',
 ];
 
-export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
+export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = React.memo(({
   correctSoll,
   correctHaben,
   expectedEffect,
@@ -366,4 +366,6 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
       </button>
     </div>
   );
-};
+});
+
+BuchungssatzComposer.displayName = 'BuchungssatzComposer';
