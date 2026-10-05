@@ -28,16 +28,19 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Left: Mobile hamburger + University Branding */}
         <div className="flex items-center gap-3 md:gap-4">
           <button
+            type="button"
             onClick={handleToggle}
-            className="p-2 -ml-1 text-slate-700 hover:bg-black/[0.04] active:bg-black/[0.08] rounded-xl lg:hidden transition-colors"
+            className="p-2 -ml-1 text-slate-700 hover:bg-black/[0.04] active:bg-black/[0.08] focus-visible:ring-2 focus-visible:ring-[#0071e3] focus:outline-none rounded-xl lg:hidden transition-colors"
             aria-label="Navigation umschalten"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div
+          <button
+            type="button"
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            className="flex items-center gap-3 cursor-pointer group select-none text-left focus-visible:ring-2 focus-visible:ring-[#0071e3] focus:outline-none rounded-xl p-1 -m-1"
+            aria-label="Zur Startseite / Lernplan navigieren"
           >
             {/* University Monogram Pill */}
             <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs transition-transform group-hover:scale-105">
@@ -53,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
                 FB 02 Wirtschaftswissenschaften · Gießen
               </span>
             </div>
-          </div>
+          </button>
 
           {/* Module Subtle Pill */}
           <div className="hidden xl:flex items-center px-2.5 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.04] ml-2">
@@ -67,8 +70,10 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2 sm:gap-3">
           {/* AI Copilot Quick Launcher Button */}
           <button
+            type="button"
             onClick={onOpenTutor}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0071e3]/10 hover:bg-[#0071e3]/15 active:bg-[#0071e3]/20 text-[#0071e3] font-medium text-xs transition-all active:scale-[0.98]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0071e3]/10 hover:bg-[#0071e3]/15 active:bg-[#0071e3]/20 focus-visible:ring-2 focus-visible:ring-[#0071e3] focus:outline-none text-[#0071e3] font-medium text-xs transition-all active:scale-[0.98]"
+            aria-label="JLU Accounting Copilot KI-Tutor öffnen"
             title="JLU Accounting Copilot öffnen"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -79,7 +84,8 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={() => onNavigate?.('lernplan')}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/[0.03] hover:bg-black/[0.06] text-slate-700 border border-black/[0.05] transition-all cursor-pointer select-none active:scale-[0.98]"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/[0.03] hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-[#0071e3] focus:outline-none text-slate-700 border border-black/[0.05] transition-all cursor-pointer select-none active:scale-[0.98]"
+            aria-label="18 Tage bis zur Klausur. Offiziellen JLU-Lernplan öffnen"
             title="Offiziellen JLU-Lernplan öffnen"
           >
             <Timer className="w-3.5 h-3.5 text-[#0071e3] shrink-0" />
@@ -87,9 +93,11 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Rabia's Progress Pill (Apple Health / Activity style) */}
-          <div
+          <button
+            type="button"
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none"
+            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none text-left focus-visible:ring-2 focus-visible:ring-[#0071e3] focus:outline-none rounded-xl py-1 -my-1"
+            aria-label="Rabias Lernfortschritt: 62%. Lernplan anzeigen"
             title="Lernfortschritt anzeigen"
           >
             <div className="flex flex-col items-end">
@@ -111,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="w-7 h-7 rounded-full bg-slate-100 border border-black/[0.06] flex items-center justify-center text-slate-700 shadow-2xs group-hover:border-slate-400 transition-colors">
               <User className="w-3.5 h-3.5" />
             </div>
-          </div>
+          </button>
         </div>
       </div>
     </header>
