@@ -17,11 +17,21 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Bolt ⚡ Optimization: Reuse a singleton AudioContext instance to avoid memory leaks
+// and browser limits on unclosed AudioContext instances created on every audio playback call.
+let audioCtxSingleton: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!audioCtxSingleton) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioCtxSingleton = new AudioCtx();
+  }
+  if (audioCtxSingleton.state === 'suspended') {
+    audioCtxSingleton.resume();
+  }
+  return audioCtxSingleton;
 };
 
 export const playSuccessSound = () => {
