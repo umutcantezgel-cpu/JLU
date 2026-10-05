@@ -1,0 +1,3 @@
+## 2025-05-18 - Exercise Map Indexing & Web Audio Singleton Optimization
+**Learning:** Querying exercises repeatedly via linear array searching (`.find()`) inside component render loops (e.g. rendering 17 notes in `RabiaNotesView`) causes $O(N)$ overhead per item. Indexing exercises into a Map at module startup achieves $O(1)$ constant-time lookup. Additionally, creating a `new AudioContext()` on every sound effect trigger leads to memory leaks and browser AudioContext quota errors; sharing a lazily-initialized singleton `AudioContext` with `.resume()` eliminates audio memory growth.
+**Action:** Always pre-index static data collections into Map structures for key-based lookups and reuse a singleton `AudioContext` for Web Audio playback.
