@@ -37,12 +37,15 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
   >('rabia_special');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
+  const [prevInitialExerciseId, setPrevInitialExerciseId] = useState<string | undefined>(initialExerciseId);
 
-  React.useEffect(() => {
+  // Sync state during render if initialExerciseId prop changes (avoids cascading render effect)
+  if (initialExerciseId !== prevInitialExerciseId) {
+    setPrevInitialExerciseId(initialExerciseId);
     if (initialExerciseId) {
       setSelectedExerciseId(initialExerciseId);
     }
-  }, [initialExerciseId]);
+  }
 
   // Filter exercises
   const filteredExercises = allExercises.filter((ex) => {
