@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, BookOpen, AlertCircle } from 'lucide-react';
 
 interface FormulaModalProps {
@@ -9,18 +9,34 @@ interface FormulaModalProps {
 }
 
 export const FormulaModal: React.FC<FormulaModalProps> = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-surface w-full max-w-3xl rounded-xl shadow-xl overflow-hidden border border-border-hairline animate-in fade-in zoom-in-95 duration-200">
+    <div
+      className="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-xs flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="formula-modal-title"
+        className="bg-surface w-full max-w-3xl rounded-xl shadow-xl overflow-hidden border border-border-hairline animate-in fade-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
         <div className="bg-secondary text-on-secondary px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <BookOpen className="w-6 h-6 text-secondary-fixed" />
             <div>
-              <h3 className="font-bold text-base sm:text-lg text-white leading-tight">
+              <h3 id="formula-modal-title" className="font-bold text-base sm:text-lg text-white leading-tight">
                 JLU Formelsammlung KLR &amp; Buchführung
               </h3>
               <span className="text-xs text-secondary-fixed">
@@ -30,7 +46,8 @@ export const FormulaModal: React.FC<FormulaModalProps> = ({ isOpen, onClose }) =
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors"
+            aria-label="Schließen"
+            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 focus-visible:ring-2 focus-visible:ring-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
