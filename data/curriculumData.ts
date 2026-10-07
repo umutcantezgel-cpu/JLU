@@ -17,17 +17,27 @@ export const allExercises: Exercise[] = [
   ...kostenrechnungExercises,
 ];
 
-export const getExerciseById = (id: string): Exercise | undefined => {
-  // Check main exercises
-  const found = allExercises.find((ex) => ex.id === id);
-  if (found) return found;
+// Bolt ⚡ Optimization: Pre-build O(1) Map lookup cache for exercises
+const exerciseMap = new Map<string, Exercise>();
 
-  // Check exam exercises
-  for (const exam of examSimulations) {
-    const examTask = exam.exercises.find((ex) => ex.id === id);
-    if (examTask) return examTask;
-  }
-  return undefined;
+allExercises.forEach((ex) => {
+  if (ex.id) exerciseMap.set(ex.id, ex);
+});
+
+examSimulations.forEach((exam) => {
+  exam.exercises.forEach((ex) => {
+    if (ex.id && !exerciseMap.has(ex.id)) {
+      exerciseMap.set(ex.id, ex);
+    }
+  });
+});
+
+/**
+ * ⚡ Bolt: Fast O(1) exercise lookup by ID using pre-computed Map.
+ * Replaces linear O(N) array scans across all exercises and exam simulations.
+ */
+export const getExerciseById = (id: string): Exercise | undefined => {
+  return exerciseMap.get(id);
 };
 
 // 9-Stage Duolingo Learning Journey
@@ -39,13 +49,13 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'rabia_special',
     requiredXp: 0,
     exercises: [
-      allExercises.find((e) => e.id === 'rabia-1')!,
-      allExercises.find((e) => e.id === 'rabia-2')!,
-      allExercises.find((e) => e.id === 'rabia-3')!,
-      allExercises.find((e) => e.id === 'rabia-11')!,
-      allExercises.find((e) => e.id === 'rabia-12')!,
-      allExercises.find((e) => e.id === 'bf-f1-1')!,
-      allExercises.find((e) => e.id === 'bf-f1-4')!,
+      getExerciseById('rabia-1')!,
+      getExerciseById('rabia-2')!,
+      getExerciseById('rabia-3')!,
+      getExerciseById('rabia-11')!,
+      getExerciseById('rabia-12')!,
+      getExerciseById('bf-f1-1')!,
+      getExerciseById('bf-f1-4')!,
     ].filter(Boolean),
   },
   {
@@ -55,14 +65,14 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'rabia_special',
     requiredXp: 80,
     exercises: [
-      allExercises.find((e) => e.id === 'rabia-4')!,
-      allExercises.find((e) => e.id === 'rabia-5')!,
-      allExercises.find((e) => e.id === 'rabia-6')!,
-      allExercises.find((e) => e.id === 'rabia-13')!,
-      allExercises.find((e) => e.id === 'rabia-14')!,
-      allExercises.find((e) => e.id === 'rabia-15')!,
-      allExercises.find((e) => e.id === 'bf-f2-2')!,
-      allExercises.find((e) => e.id === 'bf-f2-4')!,
+      getExerciseById('rabia-4')!,
+      getExerciseById('rabia-5')!,
+      getExerciseById('rabia-6')!,
+      getExerciseById('rabia-13')!,
+      getExerciseById('rabia-14')!,
+      getExerciseById('rabia-15')!,
+      getExerciseById('bf-f2-2')!,
+      getExerciseById('bf-f2-4')!,
     ].filter(Boolean),
   },
   {
@@ -72,13 +82,13 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'buchfuehrung',
     requiredXp: 180,
     exercises: [
-      allExercises.find((e) => e.id === 'rabia-7')!,
-      allExercises.find((e) => e.id === 'rabia-8')!,
-      allExercises.find((e) => e.id === 'rabia-9')!,
-      allExercises.find((e) => e.id === 'rabia-16')!,
-      allExercises.find((e) => e.id === 'rabia-17')!,
-      allExercises.find((e) => e.id === 'bf-f3-3')!,
-      allExercises.find((e) => e.id === 'bf-f4-1')!,
+      getExerciseById('rabia-7')!,
+      getExerciseById('rabia-8')!,
+      getExerciseById('rabia-9')!,
+      getExerciseById('rabia-16')!,
+      getExerciseById('rabia-17')!,
+      getExerciseById('bf-f3-3')!,
+      getExerciseById('bf-f4-1')!,
     ].filter(Boolean),
   },
   {
@@ -88,9 +98,9 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'buchfuehrung',
     requiredXp: 300,
     exercises: [
-      allExercises.find((e) => e.id === 'rabia-10')!,
-      allExercises.find((e) => e.id === 'bf-f5-2')!,
-      allExercises.find((e) => e.id === 'bf-f6-4')!,
+      getExerciseById('rabia-10')!,
+      getExerciseById('bf-f5-2')!,
+      getExerciseById('bf-f6-4')!,
     ].filter(Boolean),
   },
   {
@@ -100,9 +110,9 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'kostenrechnung',
     requiredXp: 420,
     exercises: [
-      allExercises.find((e) => e.id === 'klr-le2-1')!,
-      allExercises.find((e) => e.id === 'klr-le2-2')!,
-      allExercises.find((e) => e.id === 'klr-le4-1')!,
+      getExerciseById('klr-le2-1')!,
+      getExerciseById('klr-le2-2')!,
+      getExerciseById('klr-le4-1')!,
     ].filter(Boolean),
   },
   {
@@ -112,8 +122,8 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'kostenrechnung',
     requiredXp: 540,
     exercises: [
-      allExercises.find((e) => e.id === 'klr-le5-1')!,
-      allExercises.find((e) => e.id === 'klr-le6-1')!,
+      getExerciseById('klr-le5-1')!,
+      getExerciseById('klr-le6-1')!,
     ].filter(Boolean),
   },
   {
@@ -123,10 +133,10 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'buchfuehrung',
     requiredXp: 660,
     exercises: [
-      allExercises.find((e) => e.id === 'bf-f7-1')!,
-      allExercises.find((e) => e.id === 'bf-f8-5')!,
-      allExercises.find((e) => e.id === 'bf-f9-2')!,
-      allExercises.find((e) => e.id === 'bf-f10-3')!,
+      getExerciseById('bf-f7-1')!,
+      getExerciseById('bf-f8-5')!,
+      getExerciseById('bf-f9-2')!,
+      getExerciseById('bf-f10-3')!,
     ].filter(Boolean),
   },
   {
@@ -136,9 +146,9 @@ export const duolingoLevels: LearningLevel[] = [
     category: 'kostenrechnung',
     requiredXp: 800,
     exercises: [
-      allExercises.find((e) => e.id === 'klr-le9-1')!,
-      allExercises.find((e) => e.id === 'klr-le11-1')!,
-      allExercises.find((e) => e.id === 'klr-le12-1')!,
+      getExerciseById('klr-le9-1')!,
+      getExerciseById('klr-le11-1')!,
+      getExerciseById('klr-le12-1')!,
     ].filter(Boolean),
   },
   {
