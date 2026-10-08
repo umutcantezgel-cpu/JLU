@@ -1,0 +1,3 @@
+## 2025-05-18 - Eliminating Cascading Re-Renders from Synchronous setState in useEffect
+**Learning:** Initializing state from `localStorage` or synchronizing props to state using synchronous `setState` calls inside `useEffect` triggers unnecessary cascading re-renders on component mount and prop updates. In React 19, `react-hooks/set-state-in-effect` flags these performance anti-patterns.
+**Action:** Use lazy state initializers `useState(() => ...)` for client-side persistence like `localStorage` (with `typeof window !== 'undefined'` checks) and state adjustment during render (or `key` props) for prop synchronization to prevent layout shift and redundant render passes.
