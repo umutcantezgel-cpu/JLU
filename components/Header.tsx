@@ -35,9 +35,11 @@ export const Header: React.FC<HeaderProps> = ({
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div
+          <button
+            type="button"
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            className="flex items-center gap-3 cursor-pointer group select-none text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3] rounded-xl p-1 -m-1"
+            aria-label="JLU Accounting Tutor - Zum Lernplan navigieren"
           >
             {/* University Monogram Pill */}
             <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs transition-transform group-hover:scale-105">
@@ -53,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
                 FB 02 Wirtschaftswissenschaften · Gießen
               </span>
             </div>
-          </div>
+          </button>
 
           {/* Module Subtle Pill */}
           <div className="hidden xl:flex items-center px-2.5 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.04] ml-2">
@@ -87,10 +89,12 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Rabia's Progress Pill (Apple Health / Activity style) */}
-          <div
+          <button
+            type="button"
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none"
+            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3] rounded-xl"
             title="Lernfortschritt anzeigen"
+            aria-label="Lernfortschritt von Rabia: 62 Prozent. Zum Lernplan"
           >
             <div className="flex flex-col items-end">
               <div className="flex items-center gap-1.5">
@@ -111,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="w-7 h-7 rounded-full bg-slate-100 border border-black/[0.06] flex items-center justify-center text-slate-700 shadow-2xs group-hover:border-slate-400 transition-colors">
               <User className="w-3.5 h-3.5" />
             </div>
-          </div>
+          </button>
         </div>
       </div>
     </header>
