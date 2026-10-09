@@ -31,11 +31,43 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
   onNavigateToKlausur,
   onNavigateToStudio,
 }) => {
-  // Gamification state with localStorage persistence
-  const [hearts, setHearts] = useState<number>(5);
+  // Gamification state with lazy initializers to avoid cascading re-renders on mount
+  const [hearts, setHearts] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('jlu_rabia_hearts');
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed)) return parsed;
+      }
+    }
+    return 5;
+  });
+
   const [streak, setStreak] = useState<number>(5);
-  const [xp, setXp] = useState<number>(340);
-  const [completedLevels, setCompletedLevels] = useState<number[]>([1, 2]);
+
+  const [xp, setXp] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('jlu_rabia_xp');
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed)) return parsed;
+      }
+    }
+    return 340;
+  });
+
+  const [completedLevels, setCompletedLevels] = useState<number[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('jlu_rabia_completed_levels');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {}
+      }
+    }
+    return [1, 2];
+  });
+
   const [activeLevel, setActiveLevel] = useState<LearningLevel | null>(null);
 
   // Active level exercise state
@@ -45,21 +77,6 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
   const [isExerciseSubmitted, setIsExerciseSubmitted] = useState<boolean>(false);
   const [isExerciseCorrect, setIsExerciseCorrect] = useState<boolean>(false);
   const [showLevelCompleteModal, setShowLevelCompleteModal] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedXp = localStorage.getItem('jlu_rabia_xp');
-      const savedHearts = localStorage.getItem('jlu_rabia_hearts');
-      const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
-      if (savedXp) setXp(parseInt(savedXp, 10));
-      if (savedHearts) setHearts(parseInt(savedHearts, 10));
-      if (savedCompleted) {
-        try {
-          setCompletedLevels(JSON.parse(savedCompleted));
-        } catch (e) {}
-      }
-    }
-  }, []);
 
   const saveProgress = (newXp: number, newHearts: number, newCompleted: number[]) => {
     setXp(newXp);
