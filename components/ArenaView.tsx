@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   allExercises,
   rabiaWorkoutExercises,
   buchfuehrungExercises,
   kostenrechnungExercises,
+  getExerciseById,
   Exercise,
 } from '@/data/curriculumData';
 import { BuchungssatzComposer } from './BuchungssatzComposer';
@@ -37,29 +38,37 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
   >('rabia_special');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
+  const [prevInitialExerciseId, setPrevInitialExerciseId] = useState<string | undefined>(initialExerciseId);
 
-  React.useEffect(() => {
+  if (initialExerciseId !== prevInitialExerciseId) {
+    setPrevInitialExerciseId(initialExerciseId);
     if (initialExerciseId) {
       setSelectedExerciseId(initialExerciseId);
     }
-  }, [initialExerciseId]);
+  }
 
-  // Filter exercises
-  const filteredExercises = allExercises.filter((ex) => {
-    const matchesCat =
-      selectedCategory === 'all' || ex.category === selectedCategory;
-    const matchesSearch =
-      ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.unit.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ex.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCat && matchesSearch;
-  });
+  // Filter exercises with memoization
+  const filteredExercises = useMemo(() => {
+    return allExercises.filter((ex) => {
+      const matchesCat =
+        selectedCategory === 'all' || ex.category === selectedCategory;
+      const matchesSearch =
+        !searchQuery ||
+        ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ex.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ex.unit.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ex.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesCat && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
 
-  const currentExercise: Exercise =
-    allExercises.find((e) => e.id === selectedExerciseId) ||
-    filteredExercises[0] ||
-    allExercises[0];
+  const currentExercise: Exercise = useMemo(() => {
+    return (
+      getExerciseById(selectedExerciseId) ||
+      filteredExercises[0] ||
+      allExercises[0]
+    );
+  }, [selectedExerciseId, filteredExercises]);
 
   // User input states for current exercise
   const [mcChoice, setMcChoice] = useState<string | null>(null);
