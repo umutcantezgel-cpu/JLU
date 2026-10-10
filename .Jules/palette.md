@@ -1,0 +1,3 @@
+## 2026-10-10 - Header Semantic Buttons & Keyboard Navigation Focus
+**Learning:** Interactive header elements represented as `div` tags with `onClick` handlers lack native keyboard focusability (`Tab` navigation) and screen reader role context. Replacing them with semantic `<button type="button">` elements equipped with explicit `aria-label`s and `focus-visible:ring-2` provides native accessibility without altering visual design.
+**Action:** Always wrap header branding, user avatars, and status pills in `<button type="button">` elements with explicit ARIA labels and `focus-visible` ring indicators.
