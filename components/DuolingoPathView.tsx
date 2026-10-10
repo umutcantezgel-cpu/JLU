@@ -47,10 +47,12 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
   const [showLevelCompleteModal, setShowLevelCompleteModal] = useState<boolean>(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedXp = localStorage.getItem('jlu_rabia_xp');
-      const savedHearts = localStorage.getItem('jlu_rabia_hearts');
-      const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
+    if (typeof window === 'undefined') return;
+    const savedXp = localStorage.getItem('jlu_rabia_xp');
+    const savedHearts = localStorage.getItem('jlu_rabia_hearts');
+    const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
+
+    queueMicrotask(() => {
       if (savedXp) setXp(parseInt(savedXp, 10));
       if (savedHearts) setHearts(parseInt(savedHearts, 10));
       if (savedCompleted) {
@@ -58,7 +60,7 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
           setCompletedLevels(JSON.parse(savedCompleted));
         } catch (e) {}
       }
-    }
+    });
   }, []);
 
   const saveProgress = (newXp: number, newHearts: number, newCompleted: number[]) => {
