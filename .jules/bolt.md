@@ -1,0 +1,3 @@
+## 2025-05-18 - Web Audio API AudioContext Reuse in Single Page Applications
+**Learning:** Instantiating a new `AudioContext` on every sound effect execution (e.g. quiz feedback, gamification sound triggers) allocates new browser audio engine hardware threads, increases memory allocations, causes garbage collection pauses, and quickly exceeds browser AudioContext limits (typically 6 to 32 instances per tab), throwing DOMExceptions and failing playback.
+**Action:** Always maintain a lazy singleton `AudioContext` instance across sound effect helpers, creating it on first use and calling `resume()` if suspended by browser autoplay policies.
