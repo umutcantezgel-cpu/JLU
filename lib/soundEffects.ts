@@ -17,11 +17,21 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Performance optimization: Cache singleton AudioContext instance to avoid creating
+// new hardware threads and hitting browser AudioContext limit (~6-32 instances per tab).
+let audioCtxSingleton: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!audioCtxSingleton || audioCtxSingleton.state === 'closed') {
+    audioCtxSingleton = new AudioCtx();
+  } else if (audioCtxSingleton.state === 'suspended') {
+    audioCtxSingleton.resume().catch(() => {});
+  }
+  return audioCtxSingleton;
 };
 
 export const playSuccessSound = () => {
