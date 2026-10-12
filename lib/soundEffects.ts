@@ -17,11 +17,20 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Singleton AudioContext instance to reuse across sound playbacks and prevent reaching browser AudioContext limits
+let sharedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!sharedAudioContext) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    sharedAudioContext = new AudioCtx();
+  }
+  if (sharedAudioContext.state === 'suspended') {
+    sharedAudioContext.resume().catch(() => {});
+  }
+  return sharedAudioContext;
 };
 
 export const playSuccessSound = () => {
