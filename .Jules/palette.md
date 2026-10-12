@@ -1,0 +1,3 @@
+## 2025-05-18 - Modal Accessibility & Keyboard Dismissal Pattern
+**Learning:** Dialog modals in Next.js + Tailwind components require explicit keyboard event listeners (`Escape` key), outer backdrop dismissal (`onClick={onClose}` with `stopPropagation` on modal body), and semantic ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and `aria-label` for icon close buttons) to fulfill WCAG 2.1 AA accessibility guidelines.
+**Action:** Always include backdrop overlay click-dismiss and `Escape` key event listener alongside `role="dialog"` attributes when creating or refining modal overlays in this design system.
