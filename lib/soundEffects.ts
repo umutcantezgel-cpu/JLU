@@ -17,11 +17,21 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Performance Optimization: Cache single AudioContext instance globally to avoid
+// hitting browser limits (~6 max concurrent contexts) and unnecessary GC churn.
+let cachedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!cachedAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedAudioCtx = new AudioCtx();
+  }
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
