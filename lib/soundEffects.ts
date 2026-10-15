@@ -17,11 +17,22 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Optimization: Cache shared AudioContext singleton to prevent creating new AudioContexts on every sound trigger.
+// Browsers limit max concurrent AudioContexts (~6 active contexts), after which attempts fail with DOMExceptions.
+let audioCtxInstance: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!audioCtxInstance) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioCtxInstance = new AudioCtx();
+  }
+  // Resume context if suspended by browser autoplay policy
+  if (audioCtxInstance.state === 'suspended') {
+    audioCtxInstance.resume().catch(() => {});
+  }
+  return audioCtxInstance;
 };
 
 export const playSuccessSound = () => {
