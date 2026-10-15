@@ -55,7 +55,9 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        queueMicrotask(() => {
+          setCompletedTopics(JSON.parse(saved));
+        });
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);

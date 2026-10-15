@@ -36,8 +36,17 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate?.('lernplan');
+              }
+            }}
+            aria-label="JLU Accounting Tutor - Zum Lernplan navigieren"
+            className="flex items-center gap-3 cursor-pointer group select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0071e3] rounded-xl"
           >
             {/* University Monogram Pill */}
             <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs transition-transform group-hover:scale-105">
@@ -88,8 +97,17 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Rabia's Progress Pill (Apple Health / Activity style) */}
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate?.('lernplan');
+              }
+            }}
+            aria-label="Lernfortschritt Rabia 62% - Zum Lernplan navigieren"
+            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0071e3] rounded-xl"
             title="Lernfortschritt anzeigen"
           >
             <div className="flex flex-col items-end">

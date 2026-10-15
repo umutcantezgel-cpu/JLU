@@ -51,13 +51,15 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
       const savedXp = localStorage.getItem('jlu_rabia_xp');
       const savedHearts = localStorage.getItem('jlu_rabia_hearts');
       const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
-      if (savedXp) setXp(parseInt(savedXp, 10));
-      if (savedHearts) setHearts(parseInt(savedHearts, 10));
-      if (savedCompleted) {
-        try {
-          setCompletedLevels(JSON.parse(savedCompleted));
-        } catch (e) {}
-      }
+      queueMicrotask(() => {
+        if (savedXp) setXp(parseInt(savedXp, 10));
+        if (savedHearts) setHearts(parseInt(savedHearts, 10));
+        if (savedCompleted) {
+          try {
+            setCompletedLevels(JSON.parse(savedCompleted));
+          } catch (e) {}
+        }
+      });
     }
   }, []);
 
