@@ -17,11 +17,22 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Cached AudioContext singleton to prevent memory leaks, reduce audio playback latency,
+// and avoid browser concurrent AudioContext limits (DOMException: max ~6 contexts in Chrome/Safari).
+let cachedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!cachedAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedAudioCtx = new AudioCtx();
+  }
+  // Resume context if suspended by browser autoplay policy
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
