@@ -2,6 +2,7 @@
 // Works completely offline without external audio files, with mute toggle support
 
 let isMuted = false;
+let cachedCtx: AudioContext | null = null;
 
 export const setAudioMuted = (muted: boolean) => {
   isMuted = muted;
@@ -17,11 +18,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+/**
+ * Singleton getter for AudioContext.
+ * Performance Optimization: Reusing a single AudioContext instance avoids hitting browser
+ * concurrent context limits (~6 contexts in WebKit/Blink), prevents memory leaks/DOMExceptions,
+ * and eliminates context initialization overhead on sound playback.
+ */
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!cachedCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedCtx = new AudioCtx();
+  }
+  if (cachedCtx.state === 'suspended') {
+    cachedCtx.resume().catch(() => {
+      // Ignore autoplay policy restriction errors
+    });
+  }
+  return cachedCtx;
 };
 
 export const playSuccessSound = () => {
