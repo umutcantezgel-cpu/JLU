@@ -40,7 +40,9 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
 
   React.useEffect(() => {
     if (initialExerciseId) {
-      setSelectedExerciseId(initialExerciseId);
+      queueMicrotask(() => {
+        setSelectedExerciseId(initialExerciseId);
+      });
     }
   }, [initialExerciseId]);
 
