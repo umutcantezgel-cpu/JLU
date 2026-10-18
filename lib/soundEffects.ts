@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+let audioCtxSingleton: AudioContext | null = null;
+
+/**
+ * Returns a cached singleton AudioContext instance.
+ * Instantiating `new AudioCtx()` on every sound effect invocation causes browsers to hit
+ * maximum concurrent AudioContext limits (~6 contexts) resulting in DOMExceptions.
+ * Reusing a singleton reduces GC pressure and ensures instant, leak-free audio playback.
+ */
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!audioCtxSingleton) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioCtxSingleton = new AudioCtx();
+  }
+  if (audioCtxSingleton.state === 'suspended') {
+    audioCtxSingleton.resume().catch(() => {});
+  }
+  return audioCtxSingleton;
 };
 
 export const playSuccessSound = () => {
