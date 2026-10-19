@@ -31,13 +31,23 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={handleToggle}
             className="p-2 -ml-1 text-slate-700 hover:bg-black/[0.04] active:bg-black/[0.08] rounded-xl lg:hidden transition-colors"
             aria-label="Navigation umschalten"
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
           <div
+            role="button"
+            tabIndex={0}
+            aria-label="Accounting Tutor Startseite"
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate?.('lernplan');
+              }
+            }}
+            className="flex items-center gap-3 cursor-pointer group select-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]"
           >
             {/* University Monogram Pill */}
             <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-xs transition-transform group-hover:scale-105">
@@ -88,8 +98,17 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Rabia's Progress Pill (Apple Health / Activity style) */}
           <div
+            role="button"
+            tabIndex={0}
+            aria-label="Notizen und Fortschritt von Rabia (62%)"
             onClick={() => onNavigate?.('lernplan')}
-            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate?.('lernplan');
+              }
+            }}
+            className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-black/[0.06] cursor-pointer group select-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]"
             title="Lernfortschritt anzeigen"
           >
             <div className="flex flex-col items-end">
