@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   allExercises,
   rabiaWorkoutExercises,
@@ -15,15 +15,7 @@ import {
   CheckCircle2,
   Sparkles,
   Search,
-  Filter,
-  ArrowRight,
-  Scale,
-  Award,
-  Layers,
-  ChevronLeft,
-  ChevronRight,
   Heart,
-  HelpCircle,
 } from 'lucide-react';
 
 interface ArenaViewProps {
@@ -36,11 +28,11 @@ export const ArenaView: React.FC<ArenaViewProps> = ({ onOpenTutor, initialExerci
     'all' | 'rabia_special' | 'buchfuehrung' | 'kostenrechnung'
   >('rabia_special');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5'); // Default: Küchenmaschine
+  const [selectedExerciseId, setSelectedExerciseId] = useState<string>(initialExerciseId || 'rabia-5');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialExerciseId) {
-      setSelectedExerciseId(initialExerciseId);
+      queueMicrotask(() => setSelectedExerciseId(initialExerciseId));
     }
   }, [initialExerciseId]);
 

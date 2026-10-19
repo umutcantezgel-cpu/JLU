@@ -17,11 +17,31 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+/**
+ * Global AudioContext singleton cache.
+ * Creating a `new AudioContext()` on every sound effect invocation causes browsers
+ * (Chrome/Safari/Firefox) to reach their maximum concurrent AudioContext limit (~6 contexts),
+ * throwing DOMException errors and degrading application performance.
+ * Reusing a single AudioContext instance eliminates GC pressure, audio driver latency,
+ * and context limit crashes.
+ */
+let sharedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioContext) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    sharedAudioContext = new AudioCtx();
+  }
+
+  // Resume context if browser suspended it due to autoplay policy
+  if (sharedAudioContext.state === 'suspended') {
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
 };
 
 export const playSuccessSound = () => {
