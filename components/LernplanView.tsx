@@ -4,26 +4,17 @@ import React, { useState, useEffect } from 'react';
 import {
   jluLernplan,
   examTips,
-  LernplanPhase,
-  LernplanUnit,
 } from '@/data/lernplanData';
 import {
   Calendar,
-  CheckCircle2,
-  Circle,
   Clock,
   Award,
-  Sparkles,
-  BookOpen,
   ArrowRight,
   GraduationCap,
   FileText,
-  AlertTriangle,
-  Calculator,
   ChevronDown,
   ChevronUp,
   Target,
-  Flame,
   Printer,
   Compass,
   Smile,
@@ -50,12 +41,13 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     4: false,
   });
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (deferred to microtask to prevent synchronous effect state updates)
   useEffect(() => {
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
-        setCompletedTopics(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        queueMicrotask(() => setCompletedTopics(parsed));
       }
     } catch (e) {
       console.warn('Could not read lernplan progress from localStorage', e);
@@ -494,7 +486,7 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-slate-900 font-semibold text-lg">
             <GraduationCap className="w-5 h-5 text-[#0071e3]" />
-            <span>Die 5 goldenen Klausurregeln für Accounting (FB 02)</span>
+            <span>Die 5 goldenen Klausurreglern für Accounting (FB 02)</span>
           </div>
           <p className="text-xs text-slate-500">
             Von den Professuren Ewelt-Knauer und Wöhrmann für maximale Punktzahl empfohlen.

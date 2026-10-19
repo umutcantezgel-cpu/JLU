@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { examSimulations } from '@/data/examSimulationsData';
 import { ExamSimulation, Exercise } from '@/data/curriculumTypes';
 import { playSuccessSound, playErrorSound, playFanfareSound } from '@/lib/soundEffects';
@@ -9,29 +9,24 @@ import {
   Play,
   Pause,
   Award,
-  AlertCircle,
-  Calculator,
   CheckCircle2,
   XCircle,
   FileCheck,
   RotateCcw,
   Sparkles,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   BookOpen,
   Printer,
   Flag,
   Check,
-  HelpCircle,
-  FileText,
-  User,
   GraduationCap,
   Eye,
   List,
   AlertTriangle,
   ChevronDown,
   ChevronUp,
+  FileText,
 } from 'lucide-react';
 
 interface KlausurSimulatorViewProps {
@@ -50,7 +45,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   // If initialExamId changes from outside (e.g. from Lernplan)
   useEffect(() => {
     if (initialExamId) {
-      setSelectedExamId(initialExamId);
+      queueMicrotask(() => setSelectedExamId(initialExamId));
     }
   }, [initialExamId]);
 
@@ -83,7 +78,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   const [submissionTime, setSubmissionTime] = useState<string | null>(null);
 
   // Reset exam on exam switch or restart
-  const resetExam = (examId?: string) => {
+  const resetExam = useCallback((examId?: string) => {
     const targetExam = examSimulations.find((e) => e.id === (examId || selectedExamId)) || examSimulations[0];
     setSecondsLeft(targetExam.durationMinutes * 60);
     setIsRunning(true);
@@ -96,20 +91,27 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setShowConfirmModal(false);
     setSubmissionTime(null);
     setIsCoverExpanded(true);
-  };
+  }, [selectedExamId]);
 
   useEffect(() => {
-    resetExam(selectedExamId);
-  }, [selectedExamId]);
+    queueMicrotask(() => resetExam(selectedExamId));
+  }, [selectedExamId, resetExam]);
+
+  const handleAutoSubmit = useCallback(() => {
+    setIsRunning(false);
+    setIsSubmitted(true);
+    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
+    playFanfareSound();
+  }, []);
 
   // Live Countdown Clock
   useEffect(() => {
-    let timer: any = null;
+    let timer: ReturnType<typeof setInterval> | null = null;
     if (isRunning && !isSubmitted && secondsLeft > 0) {
       timer = setInterval(() => {
         setSecondsLeft((prev) => {
           if (prev <= 1) {
-            clearInterval(timer);
+            if (timer) clearInterval(timer);
             handleAutoSubmit();
             return 0;
           }
@@ -117,20 +119,15 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
         });
       }, 1000);
     }
-    return () => clearInterval(timer);
-  }, [isRunning, isSubmitted, secondsLeft]);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isRunning, isSubmitted, secondsLeft, handleAutoSubmit]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleAutoSubmit = () => {
-    setIsRunning(false);
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
-    playFanfareSound();
   };
 
   // Checking task answering status
@@ -914,9 +911,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   <p>{task.question}</p>
                 </div>
 
-                {/* ------------------------------------------------------------- */}
-                {/* INTERACTIVE INPUT FIELD: MULTIPLE CHOICE                      */}
-                {/* ------------------------------------------------------------- */}
+                {/* MULTIPLE CHOICE INPUT */}
                 {task.type === 'multiple_choice' && task.mcOptions && (
                   <div className="space-y-3 pt-1">
                     {task.mcOptions.map((opt) => {
@@ -994,9 +989,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* INTERACTIVE INPUT FIELD: CALCULATION                          */}
-                {/* ------------------------------------------------------------- */}
+                {/* CALCULATION INPUT */}
                 {task.type === 'calculation' && task.calculationFields && (
                   <div className="space-y-4 pt-1">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1055,9 +1048,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* INTERACTIVE INPUT FIELD: BUCHUNGSSATZ                         */}
-                {/* ------------------------------------------------------------- */}
+                {/* BUCHUNGSSATZ INPUT */}
                 {task.type === 'buchungssatz' && (
                   <div className="space-y-4 pt-1">
                     <div className="p-5 rounded-2xl bg-[#fafafc] border border-black/[0.05] space-y-3.5">
@@ -1150,9 +1141,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
                   </div>
                 )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* POST-SUBMISSION DETAILED EXPLANATION ("WARUM WIE WAS IST")     */}
-                {/* ------------------------------------------------------------- */}
+                {/* POST-SUBMISSION DETAILED EXPLANATION */}
                 {isSubmitted && evalItem && (
                   <div className="p-6 rounded-3xl bg-[#edf5fe]/70 border border-[#0071e3]/20 space-y-4 animate-in fade-in-50 duration-200">
                     <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#0071e3]/15 pb-3">
@@ -1218,7 +1207,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
           })}
         </div>
 
-        {/* Bottom Pagination for Single Mode during exam */}
+        {/* Bottom Pagination */}
         {!isSubmitted && viewMode === 'single' && (
           <div className="flex items-center justify-between gap-4 pt-8 mt-8 border-t border-slate-200 print:hidden">
             <button
@@ -1254,7 +1243,7 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
         )}
       </div>
 
-      {/* 7. CONFIRM SUBMISSION MODAL (Apple Sheet style) */}
+      {/* 7. CONFIRM SUBMISSION MODAL */}
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-black/[0.06] p-7 sm:p-8 space-y-6 animate-in zoom-in-95 duration-200">
