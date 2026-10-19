@@ -194,7 +194,8 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                     next[index].account = e.target.value;
                     setSollEntries(next);
                   }}
-                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium"
+                  aria-label={`Soll-Konto ${index + 1}`}
+                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 >
                   {COMMON_ACCOUNTS.map((acc) => (
                     <option key={acc} value={acc}>
@@ -213,7 +214,8 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                       setSollEntries(next);
                     }}
                     placeholder="0.00"
-                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary"
+                    aria-label={`Soll-Betrag ${index + 1} in Euro`}
+                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                   />
                   <span className="text-xs text-text-muted">€</span>
                 </div>
@@ -221,7 +223,9 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeSoll(index)}
-                    className="text-text-muted hover:text-red-500 p-1"
+                    aria-label={`Soll-Eintrag ${index + 1} entfernen`}
+                    title={`Soll-Eintrag ${index + 1} entfernen`}
+                    className="text-text-muted hover:text-red-500 p-1 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none rounded transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -261,7 +265,8 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                     next[index].account = e.target.value;
                     setHabenEntries(next);
                   }}
-                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium"
+                  aria-label={`Haben-Konto ${index + 1}`}
+                  className="flex-1 bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-text-primary font-medium focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 >
                   {COMMON_ACCOUNTS.map((acc) => (
                     <option key={acc} value={acc}>
@@ -280,7 +285,8 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                       setHabenEntries(next);
                     }}
                     placeholder="0.00"
-                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary"
+                    aria-label={`Haben-Betrag ${index + 1} in Euro`}
+                    className="w-full bg-surface border border-border-hairline rounded-md px-2 py-1.5 text-xs text-right font-mono font-bold text-text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                   />
                   <span className="text-xs text-text-muted">€</span>
                 </div>
@@ -288,7 +294,9 @@ export const BuchungssatzComposer: React.FC<BuchungssatzComposerProps> = ({
                   <button
                     type="button"
                     onClick={() => removeHaben(index)}
-                    className="text-text-muted hover:text-red-500 p-1"
+                    aria-label={`Haben-Eintrag ${index + 1} entfernen`}
+                    title={`Haben-Eintrag ${index + 1} entfernen`}
+                    className="text-text-muted hover:text-red-500 p-1 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none rounded transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
