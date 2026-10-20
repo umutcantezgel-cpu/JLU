@@ -46,13 +46,15 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
   onNavigate,
 }) => {
   const [selectedExamId, setSelectedExamId] = useState<string>(initialExamId || 'klausur-1');
+  const [prevInitialExamId, setPrevInitialExamId] = useState<string | undefined>(initialExamId);
 
   // If initialExamId changes from outside (e.g. from Lernplan)
-  useEffect(() => {
+  if (initialExamId !== prevInitialExamId) {
+    setPrevInitialExamId(initialExamId);
     if (initialExamId) {
       setSelectedExamId(initialExamId);
     }
-  }, [initialExamId]);
+  }
 
   const currentExam: ExamSimulation = useMemo(() => {
     return examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
@@ -98,9 +100,29 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     setIsCoverExpanded(true);
   };
 
-  useEffect(() => {
-    resetExam(selectedExamId);
-  }, [selectedExamId]);
+  const [prevSelectedExamId, setPrevSelectedExamId] = useState<string>(selectedExamId);
+  if (selectedExamId !== prevSelectedExamId) {
+    setPrevSelectedExamId(selectedExamId);
+    const targetExam = examSimulations.find((e) => e.id === selectedExamId) || examSimulations[0];
+    setSecondsLeft(targetExam.durationMinutes * 60);
+    setIsRunning(true);
+    setActiveTaskIndex(0);
+    setSelectedMCOptions({});
+    setCalculationInputs({});
+    setBuchungssatzInputs({});
+    setFlaggedTasks({});
+    setIsSubmitted(false);
+    setShowConfirmModal(false);
+    setSubmissionTime(null);
+    setIsCoverExpanded(true);
+  }
+
+  const handleAutoSubmit = () => {
+    setIsRunning(false);
+    setIsSubmitted(true);
+    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
+    playFanfareSound();
+  };
 
   // Live Countdown Clock
   useEffect(() => {
@@ -124,13 +146,6 @@ export const KlausurSimulatorView: React.FC<KlausurSimulatorViewProps> = ({
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleAutoSubmit = () => {
-    setIsRunning(false);
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleTimeString('de-DE'));
-    playFanfareSound();
   };
 
   // Checking task answering status

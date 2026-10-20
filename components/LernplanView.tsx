@@ -55,6 +55,7 @@ export const LernplanView: React.FC<LernplanViewProps> = ({
     try {
       const saved = localStorage.getItem('rabia_lernplan_completed');
       if (saved) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCompletedTopics(JSON.parse(saved));
       }
     } catch (e) {

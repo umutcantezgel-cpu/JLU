@@ -51,6 +51,7 @@ export const DuolingoPathView: React.FC<DuolingoPathViewProps> = ({
       const savedXp = localStorage.getItem('jlu_rabia_xp');
       const savedHearts = localStorage.getItem('jlu_rabia_hearts');
       const savedCompleted = localStorage.getItem('jlu_rabia_completed_levels');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (savedXp) setXp(parseInt(savedXp, 10));
       if (savedHearts) setHearts(parseInt(savedHearts, 10));
       if (savedCompleted) {

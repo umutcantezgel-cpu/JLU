@@ -1,7 +1,8 @@
 // Web Audio API Sound Synthesizer for Duolingo-style feedback
 // Works completely offline without external audio files, with mute toggle support
 
-let isMuted = false;
+let isMuted: boolean | null = null;
+let sharedAudioCtx: AudioContext | null = null;
 
 export const setAudioMuted = (muted: boolean) => {
   isMuted = muted;
@@ -11,17 +12,30 @@ export const setAudioMuted = (muted: boolean) => {
 };
 
 export const getAudioMuted = (): boolean => {
+  if (isMuted !== null) return isMuted;
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('jlu_audio_muted') === 'true';
+    isMuted = localStorage.getItem('jlu_audio_muted') === 'true';
+    return isMuted;
   }
-  return isMuted;
+  return false;
 };
 
+// Singleton AudioContext pattern to avoid browser concurrent context limits (~6)
+// and reduce GC overhead when playing sound effects repeatedly.
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+    sharedAudioCtx = new AudioCtx();
+  }
+
+  if (sharedAudioCtx.state === 'suspended') {
+    sharedAudioCtx.resume().catch(() => {});
+  }
+
+  return sharedAudioCtx;
 };
 
 export const playSuccessSound = () => {
