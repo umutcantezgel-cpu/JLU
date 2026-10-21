@@ -1,0 +1,3 @@
+## 2025-05-18 - Cached AudioContext Singleton & LocalStorage Access
+**Learning:** Instantiating `new AudioCtx()` on every sound effect invocation in Web Audio API code causes browsers to hit maximum concurrent AudioContext limits (~6 contexts), causing `DOMException: The number of AudioContexts exceeds the maximum limit` and creating audio processing thread overhead. Caching a singleton `AudioContext` instance and in-memory `isMuted` flag avoids hardware channel exhaustion and eliminates synchronous `localStorage` disk access on every audio trigger.
+**Action:** Always maintain a single cached `AudioContext` reference and resume it when suspended instead of instantiating new contexts per sound playback.

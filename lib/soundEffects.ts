@@ -1,27 +1,38 @@
 // Web Audio API Sound Synthesizer for Duolingo-style feedback
 // Works completely offline without external audio files, with mute toggle support
 
-let isMuted = false;
+let cachedMuted: boolean | null = null;
+let cachedAudioCtx: AudioContext | null = null;
 
 export const setAudioMuted = (muted: boolean) => {
-  isMuted = muted;
+  cachedMuted = muted;
   if (typeof window !== 'undefined') {
     localStorage.setItem('jlu_audio_muted', muted ? 'true' : 'false');
   }
 };
 
 export const getAudioMuted = (): boolean => {
+  if (cachedMuted !== null) return cachedMuted;
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('jlu_audio_muted') === 'true';
+    cachedMuted = localStorage.getItem('jlu_audio_muted') === 'true';
+    return cachedMuted;
   }
-  return isMuted;
+  return false;
 };
 
+// Reuses a single cached AudioContext singleton to prevent exceeding the browser limit (~6 contexts)
+// and avoid thread instantiation latency on every sound playback.
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!cachedAudioCtx || cachedAudioCtx.state === 'closed') {
+    const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtxClass) return null;
+    cachedAudioCtx = new AudioCtxClass();
+  }
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
