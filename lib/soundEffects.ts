@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Cache a singleton AudioContext instance to avoid hitting browser AudioContext limits (~6 max)
+// and prevent high garbage collection overhead from recreating AudioContext on every sound play.
+let cachedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!cachedAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedAudioCtx = new AudioCtx();
+  }
+
+  // Resume context if suspended by browser autoplay policy
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
