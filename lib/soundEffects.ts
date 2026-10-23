@@ -2,26 +2,51 @@
 // Works completely offline without external audio files, with mute toggle support
 
 let isMuted = false;
+let isMutedInitialized = false;
 
 export const setAudioMuted = (muted: boolean) => {
   isMuted = muted;
+  isMutedInitialized = true;
   if (typeof window !== 'undefined') {
     localStorage.setItem('jlu_audio_muted', muted ? 'true' : 'false');
   }
 };
 
+/**
+ * Performance Optimization:
+ * Cache muted state in memory after initial load to avoid repeated synchronous
+ * localStorage reads on every user interaction sound trigger.
+ */
 export const getAudioMuted = (): boolean => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('jlu_audio_muted') === 'true';
+  if (typeof window !== 'undefined' && !isMutedInitialized) {
+    isMuted = localStorage.getItem('jlu_audio_muted') === 'true';
+    isMutedInitialized = true;
   }
   return isMuted;
 };
 
+/**
+ * Performance Optimization:
+ * Reuse a single AudioContext singleton to avoid hitting browser context limits (~6 contexts),
+ * prevent Web Audio API memory leaks, and eliminate creation overhead on sound playback.
+ */
+let cachedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!cachedAudioCtx || cachedAudioCtx.state === 'closed') {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedAudioCtx = new AudioCtx();
+  }
+
+  // Auto-resume if browser autoplay policy suspended the context
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
