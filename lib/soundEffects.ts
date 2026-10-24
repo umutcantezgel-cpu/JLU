@@ -17,11 +17,21 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Shared AudioContext singleton to prevent hitting browser maximum context limits (~6 contexts)
+// and avoid DOMExceptions/memory leaks during rapid sound play.
+let audioCtxSingleton: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!audioCtxSingleton) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioCtxSingleton = new AudioCtx();
+  }
+  if (audioCtxSingleton.state === 'suspended') {
+    audioCtxSingleton.resume().catch(() => {});
+  }
+  return audioCtxSingleton;
 };
 
 export const playSuccessSound = () => {
