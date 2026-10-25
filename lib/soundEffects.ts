@@ -2,6 +2,7 @@
 // Works completely offline without external audio files, with mute toggle support
 
 let isMuted = false;
+let cachedAudioCtx: AudioContext | null = null;
 
 export const setAudioMuted = (muted: boolean) => {
   isMuted = muted;
@@ -17,11 +18,27 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+/**
+ * Performance Optimization: Reuses a single shared AudioContext instance.
+ * Browsers limit the number of concurrent AudioContext instances (typically ~6).
+ * Creating a new AudioContext on every sound call leads to memory leaks, GC pressure,
+ * and DOMExceptions when the browser limit is reached.
+ */
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!cachedAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    cachedAudioCtx = new AudioCtx();
+  }
+
+  // Resume context if suspended by browser autoplay policy
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
