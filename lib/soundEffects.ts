@@ -17,11 +17,21 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Reuse single AudioContext instance across sound effects to avoid hitting
+// browser limits (~6 max contexts) and reduce object creation / GC overhead.
+let cachedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!cachedAudioCtx) {
+    cachedAudioCtx = new AudioCtx();
+  }
+  if (cachedAudioCtx.state === 'suspended') {
+    cachedAudioCtx.resume().catch(() => {});
+  }
+  return cachedAudioCtx;
 };
 
 export const playSuccessSound = () => {
