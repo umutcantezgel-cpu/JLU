@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Brain,
@@ -33,6 +33,16 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
   const [query, setQuery] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +95,8 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
 
       {/* Slide-over Drawer */}
       <aside
+        role="dialog"
+        aria-modal="true"
         aria-label="JLU Accounting Copilot"
         className="fixed top-20 right-0 bottom-0 w-full sm:w-[460px] bg-surface shadow-[-4px_0_24px_-4px_rgba(15,23,42,0.16)] z-50 flex flex-col justify-between overflow-hidden border-l border-border-hairline"
       >
