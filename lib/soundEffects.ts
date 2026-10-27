@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Performance Optimization: Cache singleton AudioContext instance.
+// Instantiating `new AudioContext()` on every sound effect triggers hardware audio pipeline initialization,
+// consumes excess memory, and causes DOMExceptions once browsers hit maximum concurrent AudioContext limits (~6 contexts).
+let sharedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+    sharedAudioCtx = new AudioCtx();
+  } else if (sharedAudioCtx.state === 'suspended') {
+    sharedAudioCtx.resume().catch(() => {
+      // Ignore autoplay policy restriction errors until user interacts
+    });
+  }
+
+  return sharedAudioCtx;
 };
 
 export const playSuccessSound = () => {
