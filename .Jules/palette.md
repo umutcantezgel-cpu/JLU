@@ -1,0 +1,3 @@
+## 2025-05-18 - Accessible Dialog Modals & ARIA Landmarks
+**Learning:** In React 19 apps with custom dialog overlays, missing ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`) and absent keyboard navigation (Escape key listener) make modals inaccessible to screen reader users and keyboard-only users. Also, backdrop click handlers with `e.stopPropagation()` on the modal card provide intuitive dismissal for all users.
+**Action:** Always include `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, an explicit `aria-label="Schließen"` on header close buttons, an `Escape` key event listener in `useEffect`, and backdrop `onClick` handlers for every custom modal.
