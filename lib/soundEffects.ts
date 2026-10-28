@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Singleton AudioContext instance to avoid hitting browser context limits (~6 contexts)
+// and reduce hardware initialization overhead on sound triggers.
+let sharedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioContext) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    sharedAudioContext = new AudioCtx();
+  }
+
+  // Resume context if browser suspended it due to autoplay policies
+  if (sharedAudioContext.state === 'suspended') {
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
 };
 
 export const playSuccessSound = () => {
