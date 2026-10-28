@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, Download, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface HandwrittenNotesModalProps {
@@ -9,18 +9,40 @@ interface HandwrittenNotesModalProps {
 }
 
 export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-surface w-full max-w-3xl rounded-xl shadow-xl overflow-hidden border border-border-hairline animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-        
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-xs flex items-center justify-center p-4 cursor-pointer"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="notes-modal-title"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-surface w-full max-w-3xl rounded-xl shadow-xl overflow-hidden border border-border-hairline animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] cursor-default"
+      >
         {/* Header */}
         <div className="bg-secondary text-white px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FileText className="w-6 h-6 text-tertiary-fixed" />
             <div>
-              <h3 className="font-bold text-base sm:text-lg leading-tight">
+              <h3 id="notes-modal-title" className="font-bold text-base sm:text-lg leading-tight">
                 Rabias handschriftliches Notiz-Protokoll (Folge 1–3)
               </h3>
               <span className="text-xs text-secondary-fixed">
@@ -30,6 +52,7 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
           </div>
           <button
             onClick={onClose}
+            aria-label="Schließen"
             className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -38,7 +61,6 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
 
         {/* Document Canvas Body */}
         <div className="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50 text-xs sm:text-sm">
-          
           <div className="bg-white p-5 rounded-xl border border-border-hairline shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-border-hairline pb-3">
               <div>
@@ -120,7 +142,6 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Footer */}
@@ -146,7 +167,6 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );
