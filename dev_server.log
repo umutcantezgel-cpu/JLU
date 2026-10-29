@@ -1,0 +1,14 @@
+
+> jlu-accounting-tutor@1.0.0 dev /app
+> next dev
+
+   ▲ Next.js 15.5.28
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ○ Compiling / ...
+ ✓ Compiled / in 7.4s (776 modules)
+ HEAD / 200 in 8296ms
+ GET / 200 in 315ms
