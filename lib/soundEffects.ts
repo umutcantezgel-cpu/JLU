@@ -17,11 +17,22 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Singleton AudioContext instance to avoid hitting browser limits (~6 active contexts)
+// and prevent high CPU overhead from repeated AudioContext instantiation on every sound.
+let audioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioCtx) return null;
-  return new AudioCtx();
+  if (!audioCtx) {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioCtx = new AudioCtx();
+  }
+  // Resume context if suspended (e.g., due to browser autoplay policies before user gesture)
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
 };
 
 export const playSuccessSound = () => {
