@@ -33,6 +33,29 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
   const [query, setQuery] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    // Focus input on drawer open
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+
+    // Escape key listener
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,8 +108,10 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
 
       {/* Slide-over Drawer */}
       <aside
-        aria-label="JLU Accounting Copilot"
-        className="fixed top-20 right-0 bottom-0 w-full sm:w-[460px] bg-surface shadow-[-4px_0_24px_-4px_rgba(15,23,42,0.16)] z-50 flex flex-col justify-between overflow-hidden border-l border-border-hairline"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="drawer-title"
+        className="fixed top-16 right-0 bottom-0 w-full sm:w-[460px] bg-surface shadow-[-4px_0_24px_-4px_rgba(15,23,42,0.16)] z-50 flex flex-col justify-between overflow-hidden border-l border-border-hairline"
       >
         {/* 1. Drawer Header */}
         <div className="px-5 py-4 bg-surface border-b border-border-hairline flex flex-col gap-1.5 shrink-0">
@@ -96,17 +121,16 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
                 <Brain className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-bold text-base text-secondary leading-tight">
+                <h2 id="drawer-title" className="font-bold text-base text-secondary leading-tight">
                   JLU Accounting Copilot
                 </h2>
                 <p className="text-xs text-text-muted">Schritt-für-Schritt Erklärung</p>
               </div>
             </div>
-
             <button
               onClick={onClose}
               aria-label="Drawer schließen"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant focus-visible:ring-2 focus-visible:ring-primary transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -329,6 +353,7 @@ export const AITutorDrawer: React.FC<AITutorDrawerProps> = ({
           </label>
           <form onSubmit={handleSubmit} className="relative flex items-center">
             <input
+              ref={inputRef}
               id="ai-query-input"
               type="text"
               value={query}
