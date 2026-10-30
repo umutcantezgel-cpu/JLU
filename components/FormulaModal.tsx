@@ -30,7 +30,8 @@ export const FormulaModal: React.FC<FormulaModalProps> = ({ isOpen, onClose }) =
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors"
+            aria-label="Modal schließen"
+            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
           >
             <X className="w-5 h-5" />
           </button>
@@ -91,7 +92,7 @@ export const FormulaModal: React.FC<FormulaModalProps> = ({ isOpen, onClose }) =
         <div className="p-4 bg-surface-variant border-t border-border-hairline flex justify-end">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-lg bg-secondary text-white text-xs sm:text-sm font-semibold hover:bg-primary transition-colors"
+            className="px-5 py-2 rounded-lg bg-secondary text-white text-xs sm:text-sm font-semibold hover:bg-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             Schließen
           </button>

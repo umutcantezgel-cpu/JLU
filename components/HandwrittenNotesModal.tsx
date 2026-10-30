@@ -30,7 +30,8 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors"
+            aria-label="Modal schließen"
+            className="w-8 h-8 rounded-full bg-secondary-container/20 text-white flex items-center justify-center hover:bg-surface/20 transition-colors focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
           >
             <X className="w-5 h-5" />
           </button>
@@ -133,14 +134,14 @@ export const HandwrittenNotesModal: React.FC<HandwrittenNotesModalProps> = ({ is
               onClick={() => {
                 alert('Das handschriftliche Notiz-Protokoll wurde für den Offline-Download vorbereitet.');
               }}
-              className="px-4 py-2 rounded-lg bg-surface-variant hover:bg-secondary-container text-text-primary text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2 rounded-lg bg-surface-variant hover:bg-secondary-container text-text-primary text-xs font-semibold flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
             >
               <Download className="w-4 h-4" />
               <span>Als PDF exportieren</span>
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-secondary text-white text-xs font-semibold hover:bg-primary transition-colors"
+              className="px-4 py-2 rounded-lg bg-secondary text-white text-xs font-semibold hover:bg-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
             >
               Schließen
             </button>
