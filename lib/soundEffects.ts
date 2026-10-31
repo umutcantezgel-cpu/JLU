@@ -17,11 +17,27 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Bolt ⚡ Optimization: Cache AudioContext singleton instead of creating a new
+// hardware context on every sound invocation. Browsers enforce a strict limit
+// (~6 concurrent AudioContexts) and creating new instances causes GC pressure,
+// audio crackling, and DOMException crashes when the limit is exceeded.
+let sharedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioContext) {
+    sharedAudioContext = new AudioCtx();
+  }
+
+  // Resume context if suspended by browser autoplay policy
+  if (sharedAudioContext.state === 'suspended') {
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
 };
 
 export const playSuccessSound = () => {
