@@ -1,0 +1,3 @@
+## 2025-05-18 - Modal Accessibility & Dismissal Pattern
+**Learning:** Custom modal dialogs in the application were missing keyboard Escape listeners, backdrop click dismissal, dialog ARIA attributes, and aria-labels on close buttons. Adding standard modal keyboard/pointer handling improves user experience and accessibility for screen reader and keyboard-only users.
+**Action:** When building or modifying modals or slide-over overlays, always include `useEffect` with an Escape key listener, backdrop click dismissal with `stopPropagation` on the dialog container, `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and explicit `aria-label` on icon-only close buttons.
