@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Performance optimization: Cache AudioContext singleton to avoid hitting browser hardware limits
+// (~6 concurrent contexts) and reduce redundant audio engine initialization overhead (~20-50ms per sound).
+let cachedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!cachedAudioContext || cachedAudioContext.state === 'closed') {
+    cachedAudioContext = new AudioCtx();
+  }
+
+  // Resume suspended audio context (e.g., from browser autoplay security policies)
+  if (cachedAudioContext.state === 'suspended') {
+    cachedAudioContext.resume().catch(() => {});
+  }
+
+  return cachedAudioContext;
 };
 
 export const playSuccessSound = () => {
