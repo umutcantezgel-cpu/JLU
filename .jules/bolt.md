@@ -1,0 +1,3 @@
+## 2025-05-14 - Web Audio API AudioContext Singleton Optimization
+**Learning:** Instantiating `new AudioContext()` on every sound effect triggers hardware initialization overhead (~20-50ms) and quickly exhausts the browser's maximum concurrent hardware context limit (~6 contexts in WebKit/Chromium browsers), causing `DOMException: The number of hardware contexts provided has reached its maximum`.
+**Action:** Always maintain and reuse a module-level `AudioContext` singleton. Check and handle `state === 'suspended'` by calling `.resume()` on user interaction or playback, and check `state === 'closed'` before re-creating.
