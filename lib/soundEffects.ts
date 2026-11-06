@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Bolt Optimization: Cache AudioContext singleton instead of allocating `new AudioCtx()`
+// on every sound effect invocation. Browsers limit active AudioContext instances (often max 6),
+// after which creation throws a DOMException or degrades performance. Reusing a single
+// context eliminates audio initialization latency (~10-50ms), avoids main-thread GC pressure,
+// and ensures consistent playback across repeated user interactions.
+let sharedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioContext || sharedAudioContext.state === 'closed') {
+    sharedAudioContext = new AudioCtx();
+  } else if (sharedAudioContext.state === 'suspended') {
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
 };
 
 export const playSuccessSound = () => {
