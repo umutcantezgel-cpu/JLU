@@ -17,11 +17,27 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Performance optimization: Cache and reuse a single AudioContext instance across sound calls.
+// Instantiating `new AudioCtx()` on every sound effect allocates redundant hardware contexts
+// and causes browsers (Chrome/Safari/Firefox) to throw DOMException after hitting maximum concurrent
+// AudioContext limits (~6 contexts), while adding 10-50ms latency per sound initiation.
+let cachedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!cachedAudioContext || cachedAudioContext.state === 'closed') {
+    cachedAudioContext = new AudioCtx();
+  }
+
+  // Resume suspended audio context (required due to browser autoplay policies)
+  if (cachedAudioContext.state === 'suspended') {
+    cachedAudioContext.resume().catch(() => {});
+  }
+
+  return cachedAudioContext;
 };
 
 export const playSuccessSound = () => {
