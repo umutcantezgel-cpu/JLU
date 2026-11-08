@@ -17,11 +17,27 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// Bolt Performance Optimization:
+// Cache and reuse an AudioContext singleton across sound effects.
+// Instantiating a new AudioContext per sound hits browser concurrent context limits (~6 in Chrome/WebKit),
+// leaks hardware audio threads, and incurs significant instantiation latency (~10-50ms).
+let sharedAudioCtx: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+    sharedAudioCtx = new AudioCtx();
+  }
+
+  // Resume context if suspended due to browser autoplay policies
+  if (sharedAudioCtx.state === 'suspended') {
+    sharedAudioCtx.resume().catch(() => {});
+  }
+
+  return sharedAudioCtx;
 };
 
 export const playSuccessSound = () => {
