@@ -1,0 +1,3 @@
+## 2026-03-30 - Modal accessibility & dismissibility pattern
+**Learning:** Custom overlay dialogs need explicit Escape key handling, backdrop click dismissal with click propagation stoppage on modal body, and standard WAI-ARIA dialog attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`) so keyboard and screen-reader users can orient and close modal sheets effortlessly.
+**Action:** When implementing or updating modal/drawer components in this app, ensure `useEffect` registers a keydown listener for Escape, the backdrop click triggers `onClose`, and close buttons carry explicit `aria-label` text.
