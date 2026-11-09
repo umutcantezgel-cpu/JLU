@@ -1,0 +1,3 @@
+## 2025-05-18 - AudioContext Singleton Pattern for Web Audio Synthesizers
+**Learning:** Instantiating `new AudioContext()` on every sound effect invocation allocates new hardware audio tracks and memory buffers, causing heavy GC pressure and quickly reaching browser concurrent AudioContext limits (~6 contexts in Chromium browsers). Once the limit is exceeded, subsequent calls fail with DOMExceptions, breaking audio feedback completely across interactive learning sessions.
+**Action:** Always maintain a single, lazily-instantiated `AudioContext` module singleton, checking for `closed` or `suspended` states and calling `ctx.resume()` on user interaction instead of instantiating new contexts.

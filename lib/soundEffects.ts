@@ -17,11 +17,25 @@ export const getAudioMuted = (): boolean => {
   return isMuted;
 };
 
+// BOLT OPTIMIZATION: Reuse a shared AudioContext singleton.
+// Creating a new AudioContext on every sound effect invocation wastes memory,
+// triggers heavy garbage collection, and quickly hits browser limits (~6 contexts),
+// throwing DOMExceptions when answers or tasks are repeatedly submitted.
+let sharedAudioContext: AudioContext | null = null;
+
 const getAudioContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+
+  if (!sharedAudioContext || sharedAudioContext.state === 'closed') {
+    sharedAudioContext = new AudioCtx();
+  } else if (sharedAudioContext.state === 'suspended') {
+    // Browsers often suspend AudioContext until user interaction; resume if suspended
+    sharedAudioContext.resume().catch(() => {});
+  }
+
+  return sharedAudioContext;
 };
 
 export const playSuccessSound = () => {
