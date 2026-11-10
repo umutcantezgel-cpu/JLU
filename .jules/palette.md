@@ -1,0 +1,3 @@
+## 2025-05-18 - Modal Dialog Accessibility and Dismissal Patterns
+**Learning:** Custom overlay modals in this app require explicit keyboard Escape event listeners on window, backdrop click handlers with event propagation stopped on modal containers (`e.stopPropagation()`), along with ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`) and clear `aria-label` attributes on icon-only close buttons to satisfy accessibility and expected keyboard/pointer interactions.
+**Action:** When implementing or refactoring modal components in this application, ensure the Escape key listener, backdrop dismissal, ARIA attributes, and accessible close button labels are included.
